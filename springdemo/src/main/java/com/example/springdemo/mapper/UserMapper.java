@@ -8,5 +8,9 @@ import com.example.springdemo.entity.User;
 
 @Mapper
 public interface UserMapper {
-    List<User> selectUserList();
+    public List<User> selectUserList();
+
+    public Boolean addUser(User user);
+
+    public Boolean delUser(Long id);
 }

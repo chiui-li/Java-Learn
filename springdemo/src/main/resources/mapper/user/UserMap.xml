@@ -7,4 +7,16 @@
     <select id="selectUserList" resultType="User">
         select * from users
     </select>
+
+    <insert id="addUser" parameterType="User" >
+        INSERT INTO users(username, password, email) VALUES(
+            #{username},
+            #{password},
+            #{email}
+        )
+    </insert>
+
+    <delete id="delUser" parameterType="long">
+        delete from users where id = #{id}
+    </delete>
 </mapper>
