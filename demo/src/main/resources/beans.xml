@@ -1,0 +1,63 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           https://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           https://www.springframework.org/schema/context/spring-context.xsd
+       ">
+
+    <context:property-placeholder location="jdbc.properties"/>
+
+    <!-- 声明/定义一个 Bean, Spring 容器会自动管理这个Bean -->
+    <!-- 通过全限定类名字符串获取class  Class.forName("com.example.User") -->
+    <bean id="userBean" class="com.example.User" >
+      <property name="list">
+        <list>
+          <value>a</value>
+          <value>b</value>
+          <value>c</value>
+        </list>
+      </property>
+      <property name="set">
+        <set>
+          <value>a</value>
+          <value>b</value>
+          <value>c</value>
+        </set>
+      </property>
+      <property name="map">
+        <map>
+          <entry key="a" value="1"></entry>
+          <entry key="b" value="2"></entry>
+          <entry key="c" value="3"></entry>
+        </map>
+      </property>
+    </bean>
+
+
+
+    <bean id="grandBean" class="com.example.GrandParent" />
+
+    <bean id="parent" class="com.example.Parent">
+      <constructor-arg index="0" ref="grandBean" />
+    </bean>
+
+    <bean id="studentBean" class="com.example.Student">
+      <!-- 这里 name 其实是找的是 setParent 而不是找的parent 属性 -->
+      <property name="parent" ref="parent"/>
+    </bean>
+
+    <bean id="studentBean1" class="com.example.Student">
+      <!-- 这里 name 其实是找的是 setParent 而不是找的parent 属性 -->
+      <property name="parent" ref="parent"/>
+    </bean>
+
+    <bean id="myJdbcs" class="com.example.MyJDBC">
+      <property name="url" value="${jdbc.url}"></property>
+      <property name="driver" value="${jdbc.driver}"></property>
+      <property name="user" value="${jdbc.username}"></property>
+      <property name="password" value="${jdbc.password}"></property>
+    </bean>
+</beans>

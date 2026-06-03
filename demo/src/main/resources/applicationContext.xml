@@ -1,0 +1,15 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <!-- 声明/定义一个 Bean, Spring 容器会自动管理这个Bean -->
+    <!-- 通过全限定类名字符串获取class  Class.forName("com.example.User") -->
+    <bean id="userBean2" class="com.example.User" />
+
+    <bean id="nowBean" class="java.util.Date" />
+    
+</beans>
+
+
