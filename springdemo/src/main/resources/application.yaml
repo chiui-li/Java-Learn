@@ -1,0 +1,14 @@
+# spring.application.name=springdemo
+# spring.application.name=springdemo
+spring:
+  application: springdemo
+  datasource:
+    url: jdbc:mysql://192.168.91.95:3306/website
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.example.springdemo.entity
+  map-underscore-to-camel-case: true
