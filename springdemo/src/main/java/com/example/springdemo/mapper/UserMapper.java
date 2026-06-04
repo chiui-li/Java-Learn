@@ -3,6 +3,7 @@ package com.example.springdemo.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.example.springdemo.entity.User;
 
@@ -13,4 +14,12 @@ public interface UserMapper {
     public Boolean addUser(User user);
 
     public Boolean delUser(Long id);
+
+    public User findUserByPassword(
+            @Param("username") String username,
+            @Param("password") String password);
+
+    public User findUserById(
+            @Param("id") Long id);
+
 }
