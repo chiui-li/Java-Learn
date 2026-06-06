@@ -1,35 +1,27 @@
 package com.example.springdemo.entity;
 
-import lombok.Data;
-
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
 
 @Data
-public class User {
-
+public class PostEntity {
   /**
    * 主键ID
    */
   private Long id;
 
-  /**
-   * 用户名
-   */
-  private String username;
+  private Long userID;
 
-  /**
-   * 密码(加密后)
-   */
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-  private String password;
-
-  /**
-   * 邮箱
-   */
-  private String email;
+  private String title;
+  private String content;
+  private String draftTitle;
+  private String draftContent;
+  private String postType;
+  private String status;
+  private Long viewCount;
 
   /**
    * 创建时间
@@ -44,8 +36,9 @@ public class User {
   private LocalDateTime updatedAt;
 
   /**
-   * 密码更新时间
+   * 草稿更新时间
    */
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-  private LocalDateTime passwordUpdatedAt;
+  private LocalDateTime draftUpdatedAt;
+
 }

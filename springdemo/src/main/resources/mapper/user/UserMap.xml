@@ -27,9 +27,15 @@
         select <include refid="user_columns" /> from users where username=#{username} and password=#{password}
     </select>
 
-    <!-- findUserById --> 
+    <!-- findUserById -->
     <select id="findUserById">
         select <include refid="user_columns" /> from users where id=#{id}
     </select>
-    
+
+
+    <select id="findUserByEmail">
+        select <include refid="user_columns" /> from users where email=#{email} or username=#{username}
+    </select>
+
+
 </mapper>

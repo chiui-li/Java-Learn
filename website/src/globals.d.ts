@@ -2,7 +2,7 @@ declare namespace D {
   interface Result<T = any> {
     data?: T;
     code?: number;
-    msg?: string;
+    errMsg?: string;
   }
 
   interface User {
@@ -10,4 +10,27 @@ declare namespace D {
     email?: string;
     password?: string;
   }
+
+  type UserRes = Result<User>;
+
+  type PostType = "article" | "images";
+
+  type ArticleStatus = "draft" | "published";
+
+  interface Article {
+    id?: number;
+    userId?: number;
+    title?: string;
+    content?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    viewCount?: number;
+    postType?: PostType;
+    draftContent?: string;
+    draftTitle?: string | null;
+    status?: ArticleStatus;
+    draftUpdatedAt?: string;
+  }
+
+  type ArticleRes = Result<Article>;
 }

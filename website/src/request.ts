@@ -1,5 +1,6 @@
 import axios, { type AxiosResponse } from "axios";
 import router from "./router";
+import { ElMessage } from "element-plus";
 
 const ins = axios.create({
   baseURL: "http://localhost:8080",
@@ -12,15 +13,22 @@ ins.interceptors.request.use((req) => {
 
 ins.interceptors.response.use(
   (res: AxiosResponse<any>) => {
+    console.log("res ---->", res);
     if (res.status === 401) {
       router.replace("/welcome/user");
       return res.data;
     }
-
+    console.log("----> ", res?.data);
+    if (res?.data?.errMsg) {
+      ElMessage({ message: res?.data?.errMsg });
+    }
     return res.data;
   },
   (error) => {
-    console.error("请求错误:", error);
+    if (error.response.status === 401) {
+      ElMessage({ message: "请登录" });
+      router.replace("/welcome/user");
+    }
     return Promise.reject(error);
   },
 );

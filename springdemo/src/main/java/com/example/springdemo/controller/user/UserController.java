@@ -1,12 +1,13 @@
 package com.example.springdemo.controller.user;
 
-import java.util.ArrayList;
+// import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,41 +18,58 @@ import com.example.springdemo.services.UserService;
 import com.example.springdemo.utils.Result;
 
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserService uService;
+  private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+  @Autowired
+  private UserService uService;
 
-    @RequestMapping("/login")
-    public Result<User> login(@RequestBody User user, HttpSession session) {
-        User u = uService.findByPassword(user.getUsername(), user.getPassword());
-        if (u != null) {
-            Long userId = u.getId();
-            String uuid = UUID.randomUUID().toString();
-            System.out.println("----->" + userId);
-            if (uuid != null && userId != null) {
-                session.setAttribute(Constants.SEESSION_KEY, uuid);
-                // 再设置过期时间
-                System.out.println("登录成功 -----> " + uuid);
-                redisTemplate.opsForValue().set(uuid, userId);
-                redisTemplate.expire(uuid, Constants.EXPIRE_MIN, TimeUnit.MINUTES);
-                return Result.success(u, null);
-            } else {
-                return Result.error("password error");
-            }
-        } else {
-            return Result.error("password error");
-        }
+  @Autowired
+  private RedisTemplate<String, Object> redisTemplate;
+
+  @RequestMapping("/login")
+  public Result<User> login(@RequestBody User user, HttpSession session) {
+    User u = uService.findByPassword(user.getUsername(), user.getPassword());
+    if (u != null) {
+      Long userId = u.getId();
+      String uuid = UUID.randomUUID().toString();
+      if (uuid != null && userId != null) {
+        // session
+        session.setAttribute(Constants.SEESSION_KEY, uuid);
+        // 再设置过期时间
+        logger.info("登录成功 userId:[{}]  redisKey: {}", userId, uuid, userId);
+        redisTemplate.opsForValue().set(uuid, userId);
+        redisTemplate.expire(uuid, Constants.EXPIRE_MIN, TimeUnit.MINUTES);
+        return Result.success(u, null);
+      } else {
+        return Result.success(null, "password error");
+      }
+    } else {
+      return Result.success(null, "password error");
     }
+  }
 
-    @RequestMapping("/all")
-    public Result<List<User>> queryUsers() {
-        return Result.success(uService.selectAllUsers(), null);
+  @PostMapping("/register")
+  public Result<Boolean> register(@RequestBody User u) {
+
+    switch (uService.registerUser(u)) {
+      case "error":
+        return Result.success(false, "注册错误");
+      case "email":
+        return Result.success(false, "邮箱已经被注册");
+      case "username":
+        return Result.success(false, "用户名已经被注册");
+      case "new":
+        return Result.success(true, null);
+      default:
+        return Result.success(false, "注册错误");
     }
+  }
+
 }
