@@ -2,8 +2,6 @@ import http from "@/request";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-const now = () => new Date().toISOString().slice(0, 19).replace("T", " ");
-
 export const useArticleStore = defineStore("article-store", () => {
   const articles = ref<D.Article[]>([]);
 

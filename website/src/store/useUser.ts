@@ -1,6 +1,6 @@
 import http from "@/request"
 import { defineStore } from "pinia"
-import { onMounted, ref } from "vue"
+import { ref } from "vue"
 
 export interface User {
   username: string

@@ -38,41 +38,21 @@ function goCreate() {
   <div :class="s.page">
     <div :class="s.header">
       <div>
-        <!-- <p :class="s.tag">仪表盘</p> -->
         <h2 :class="s.heading">概览</h2>
         <p :class="s.desc">查看您的内容数据与最新动态</p>
       </div>
       <div :class="s.headerActions">
         <el-button @click="goArticles">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            style="margin-right: 4px"
-          >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px">
             <path
-              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-            />
+              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
           </svg>
           全部文章
         </el-button>
         <el-button type="primary" @click="goCreate">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            style="margin-right: 4px"
-          >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
@@ -85,19 +65,10 @@ function goCreate() {
     <div :class="s.statsGrid">
       <div :class="[s.statCard, { [s.cardBlue]: true }]">
         <div :class="s.statIcon">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round">
             <path
-              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-            />
+              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
           </svg>
         </div>
         <div :class="s.statBody">
@@ -108,16 +79,8 @@ function goCreate() {
       </div>
       <div :class="[s.statCard, { [s.cardGreen]: true }]">
         <div :class="s.statIcon">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
@@ -128,16 +91,8 @@ function goCreate() {
       </div>
       <div :class="[s.statCard, { [s.cardAmber]: true }]">
         <div :class="s.statIcon">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
             <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
           </svg>
@@ -149,16 +104,8 @@ function goCreate() {
       </div>
       <div :class="[s.statCard, { [s.cardPurple]: true }]">
         <div :class="s.statIcon">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
             <circle cx="12" cy="12" r="3" />
           </svg>
@@ -178,16 +125,8 @@ function goCreate() {
       </div>
       <div :class="s.recentCard">
         <div v-if="recentArticles.length === 0" :class="s.empty">
-          <svg
-            width="48"
-            height="48"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#cbd5e1"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
             <polyline points="14 2 14 8 20 8" />
             <line x1="16" y1="13" x2="8" y2="13" />
@@ -195,47 +134,29 @@ function goCreate() {
           </svg>
           <p>暂无文章，快去创建第一篇吧</p>
         </div>
-        <div
-          v-for="article in recentArticles"
-          :key="article.id"
-          :class="s.articleRow"
-          @click="router.push(`/backend/articles/${article.id}/edit`)"
-        >
+        <div v-for="article in recentArticles" :key="article.id" :class="s.articleRow"
+          @click="router.push(`/backend/articles/${article.id}/edit`)">
           <div :class="s.articleInfo">
             <div :class="s.articleTitle">{{ article.title }}</div>
             <div :class="s.articleMeta">
               <span :class="s.articleDate">{{ article.createdAt }}</span>
-              <span
-                :class="[
-                  s.statusDot,
-                  {
-                    [s.published]: article.status === 'published',
-                    [s.draft]: article.status === 'draft',
-                  },
-                ]"
-              />
-              <span
-                :class="
-                  article.status === 'published' ? s.publishedText : s.draftText
-                "
-              >
+              <span :class="[
+                s.statusDot,
+                {
+                  [s.published]: article.status === 'published',
+                  [s.draft]: article.status === 'draft',
+                },
+              ]" />
+              <span :class="article.status === 'published' ? s.publishedText : s.draftText
+                ">
                 {{ article.status === "published" ? "已发布" : "草稿" }}
               </span>
               <span v-if="article.viewCount !== undefined">
-                · {{ article.viewCount }} 次浏览</span
-              >
+                · {{ article.viewCount }} 次浏览</span>
             </div>
           </div>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#94a3b8"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </div>
@@ -247,35 +168,18 @@ function goCreate() {
       <h3 :class="s.sectionTitle">快速操作</h3>
       <div :class="s.quickGrid">
         <div :class="s.quickCard" @click="goCreate">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#6366f1"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
           <span>新建文章</span>
         </div>
         <div :class="s.quickCard" @click="goArticles">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#6366f1"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path
-              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-            />
+              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
           </svg>
           <span>管理文章</span>
         </div>
@@ -369,14 +273,17 @@ function goCreate() {
   background: #eef2ff;
   color: #6366f1;
 }
+
 .cardGreen .statIcon {
   background: #f0fdf4;
   color: #22c55e;
 }
+
 .cardAmber .statIcon {
   background: #fffbeb;
   color: #f59e0b;
 }
+
 .cardPurple .statIcon {
   background: #f5f3ff;
   color: #8b5cf6;
