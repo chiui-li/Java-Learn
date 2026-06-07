@@ -1,7 +1,7 @@
 package com.example.springdemo.constants;
 
 final public class Constants {
-  final public static String SEESSION_KEY = "user";
+  final public static String SEESSION_KEY = "redis_user_session_key";
 
   final public static String ATR_USERID = "userID";
 

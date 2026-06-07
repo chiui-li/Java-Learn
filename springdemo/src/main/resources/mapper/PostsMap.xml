@@ -31,4 +31,40 @@
         WHERE
           user_id = #{p.userID} and id = #{p.id}
   </update>
+
+  <update id="publishArticleById">
+    UPDATE posts
+    SET
+      title = #{p.title},
+      content = #{p.content},
+      draft_title = #{p.title},
+      draft_content = #{p.content},
+      updated_at = NOW(),
+      draft_updated_at = NOW(),
+      status = "published"
+    WHERE
+      user_id = #{p.userID} and id = #{p.id}
+  </update>
+
+  <update id="unpublishArticleById">
+    UPDATE posts
+    SET status = "draft"
+    WHERE
+      user_id = #{p.userID} and id = #{p.id}
+  </update>
+
+  <select id="listPosts" >
+    select <include refid="article_cols" /> from posts
+    WHERE
+      user_id = #{userID}
+      <if test="keyword != null and keyword.trim() != ''">
+          and (title like concat('%', #{keyword}, '%')
+               or draft_title like concat('%', #{keyword}, '%'))
+      </if>
+      order by draft_updated_at desc
+  </select>
+
+  <delete id="deletePostById">
+    DELETE FROM posts WHERE user_id = #{userID} and id = #{articleId}
+  </delete>
 </mapper>

@@ -1,13 +1,15 @@
 package com.example.springdemo.controller.user;
 
 // import java.util.ArrayList;
-import java.util.List;
+// import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -72,4 +74,23 @@ public class UserController {
     }
   }
 
+  @GetMapping("/who")
+  public Result<User> whoAmI(@RequestAttribute("userID") Long userID) {
+    User u = uService.findById(userID);
+    if (u != null) {
+      u.setId(null);
+      return Result.success(u, null);
+    }
+    return Result.error("你是谁?");
+  }
+
+  @GetMapping("/logout")
+  public Result<Boolean> logout(HttpSession session, @RequestAttribute("redis_user_session_key") String redisKey) {
+    session.invalidate();
+    Integer s = (Integer) redisTemplate.opsForValue().getAndDelete(redisKey);
+
+    logger.info("注销用户: {}", s);
+
+    return Result.success(true, null);
+  }
 }

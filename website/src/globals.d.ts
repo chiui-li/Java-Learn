@@ -33,4 +33,15 @@ declare namespace D {
   }
 
   type ArticleRes = Result<Article>;
+
+
+  interface Page<T> {
+    list?: T[];
+    pageNum?: number;
+    pageSize?: number;
+    total?: number;
+    pages?: number;
+  }
+
+  type ArticleListRes = Result<Page<Article>>;
 }

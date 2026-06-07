@@ -3,7 +3,7 @@ package com.example.springdemo.interceptor;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.tomcat.util.net.DispatchType;
+// import org.apache.tomcat.util.net.DispatchType;
 import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.boot.web.servlet.DispatcherType;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -58,6 +58,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     if (userIDMaybeNull != null) {
       Long userID = ((Number) userIDMaybeNull).longValue();
       request.setAttribute(Constants.ATR_USERID, userID);
+      request.setAttribute(Constants.SEESSION_KEY, redisSeessionID);
       redis.expire(redisSeessionID, Constants.EXPIRE_MIN, TimeUnit.MINUTES);
       return HandlerInterceptor.super.preHandle(request, response, handler);
     } else {

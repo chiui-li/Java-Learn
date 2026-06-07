@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import TiptapEditor from "@/components/TiptapEditor.vue";
-import { computed, ref, watch } from "vue";
+import { computed, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { useArticleStore } from "@/store/useArticleStore";
@@ -31,11 +31,61 @@ const articleForm = ref<D.Article>({
   status: "draft",
 });
 
+const saving = ref(false);
+const saved = ref(true);
+let draftTimer: ReturnType<typeof setTimeout> | null = null;
+
+function clearDraftTimer() {
+  if (draftTimer) {
+    clearTimeout(draftTimer);
+    draftTimer = null;
+  }
+}
+
+async function flushDraft() {
+  if (isNew.value) return;
+  const id = route.params.id;
+  if (!id || id === "new") return;
+  clearDraftTimer();
+  saving.value = true;
+  try {
+    await http.post(`/posts/detail/update/${id}/draft`, {
+      data: articleForm.value,
+    });
+    saved.value = true;
+  } catch {
+    // silent
+  } finally {
+    saving.value = false;
+  }
+}
+
+function autoSaveDraft() {
+  if (isNew.value) return;
+  saved.value = false;
+  clearDraftTimer();
+  draftTimer = setTimeout(flushDraft, 2000);
+}
+
+watch(
+  () => articleForm.value.title,
+  () => autoSaveDraft(),
+);
+
+watch(
+  () => articleForm.value.content,
+  () => autoSaveDraft(),
+);
+
+onUnmounted(() => {
+  flushDraft();
+});
+
 async function loadArticle() {
   const id = route.params.id;
   const res = await http<D.ArticleRes>("/posts/detail/" + id);
-
   articleForm.value = { ...res.data };
+  saved.value = true;
 }
 
 watch(
@@ -47,40 +97,33 @@ watch(
 );
 
 function goBack() {
+  clearDraftTimer();
   router.push("/backend/articles");
 }
 
-function saveAsDraft() {
-  const id = route.params.id;
-  http.post(`/posts/detail/update/${id}/draft`, {
-    data: articleForm.value,
-  });
-
-  // const saved = articleStore.saveArticle({
-  //   ...articleForm.value,
-  //   status: "draft",
-  //   draftUpdatedAt: new Date().toISOString().slice(0, 19).replace("T", " "),
-  // });
-  // if (isNew.value) {
-  //   router.replace(`/backend/articles/${saved.id}/edit`);
-  // }
+async function saveAsDraft() {
+  await flushDraft();
   ElMessage.success("已保存为草稿");
 }
 
-function publishArticle() {
-  const saved = articleStore.saveArticle({
-    ...articleForm.value,
-    status: "published",
-    updatedAt: new Date().toISOString().slice(0, 19).replace("T", " "),
-    draftUpdatedAt:
-      articleForm.value.draftUpdatedAt ||
-      new Date().toISOString().slice(0, 19).replace("T", " "),
+async function publishArticle() {
+  const id = route.params.id;
+  await http.post(`/posts/detail/publish/${id}`, {
+    data: articleForm.value,
   });
-  if (isNew.value) {
-    router.replace(`/backend/articles/${saved.id}/edit`);
-  }
   ElMessage.success("已发布文章");
+  await loadArticle()
 }
+
+async function unpublishArticle() {
+  const id = route.params.id;
+  await http.post(`/posts/detail/unpublish/${id}`, {
+    // data: articleForm.value,
+  });
+  ElMessage.success("已取消发布文章");
+  await loadArticle()
+}
+
 </script>
 
 <template>
@@ -98,54 +141,20 @@ function publishArticle() {
         </p>
       </div>
       <div :class="s.headerActions">
+        <span v-if="!isNew" :class="[s.saveIndicator, saving ? s.saving : s.saved]">
+          {{ saving ? "保存中…" : (saved ? "草稿已保存" : "未保存的更改") }}
+        </span>
         <el-button @click="goBack">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            style="margin-right: 4px"
-          >
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
           返回
         </el-button>
         <el-button type="warning" @click="saveAsDraft">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            style="margin-right: 4px"
-          >
-            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-          </svg>
           保存草稿
         </el-button>
         <el-button type="primary" @click="publishArticle">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            style="margin-right: 4px"
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
           {{ "发布" }}
+        </el-button>
+        <el-button type="primary" v-if="articleForm.status === 'published'" @click="unpublishArticle">
+          {{ "取消发布" }}
         </el-button>
       </div>
     </div>
@@ -153,11 +162,7 @@ function publishArticle() {
     <div :class="s.formCard">
       <el-form label-width="80px" :model="articleForm" label-position="top">
         <el-form-item label="标题">
-          <el-input
-            v-model="articleForm.draftTitle"
-            placeholder="请输入文章标题"
-            size="large"
-          />
+          <el-input v-model="articleForm.draftTitle" placeholder="请输入文章标题" size="large" />
         </el-form-item>
 
         <el-form-item label="正文">
@@ -229,5 +234,29 @@ function publishArticle() {
 
 .formRow :global(.el-form-item) {
   flex: 1;
+}
+
+.saveIndicator {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.saving {
+  color: #6366f1;
+  background: #eef2ff;
+}
+
+.saved {
+  color: #059669;
+  background: #ecfdf5;
+}
+
+.saveIndicator:empty+.saveIndicator {
+  display: none;
 }
 </style>

@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(scanBasePackages = "com.example.springdemo")
 public class SpringdemoApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpringdemoApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(SpringdemoApplication.class, args);
+    }
 }

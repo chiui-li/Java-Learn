@@ -18,9 +18,9 @@ ins.interceptors.response.use(
       router.replace("/welcome/user");
       return res.data;
     }
-    console.log("----> ", res?.data);
     if (res?.data?.errMsg) {
       ElMessage({ message: res?.data?.errMsg });
+      throw new Error(res?.data?.errMsg);
     }
     return res.data;
   },
@@ -28,6 +28,11 @@ ins.interceptors.response.use(
     if (error.response.status === 401) {
       ElMessage({ message: "请登录" });
       router.replace("/welcome/user");
+      return
+    }
+    if (error.response) {
+      ElMessage({ message: error.response });
+      // router.replace("/welcome/user");
     }
     return Promise.reject(error);
   },

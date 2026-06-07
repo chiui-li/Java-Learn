@@ -1,31 +1,37 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useArticleStore } from "@/store/useArticleStore";
 import http from "@/request";
 
 const router = useRouter();
 const keyword = ref("");
+const loading = ref(false);
 const articleStore = useArticleStore();
 
-const filteredArticles = computed(() => {
-  const key = keyword.value.trim().toLowerCase();
-  if (!key) {
-    return articleStore.articles;
+async function loadArticles() {
+  loading.value = true;
+  try {
+    await articleStore.queryArticles({ keyword: keyword.value || undefined, pageNum: articleStore.pageNum, pageSize: articleStore.pageSize });
+  } finally {
+    loading.value = false;
   }
-  return articleStore.articles.filter(
-    (article) =>
-      article.title.toLowerCase().includes(key) ||
-      article.content.toLowerCase().includes(key),
-  );
-});
+}
+
+watch(keyword, () => {
+  articleStore.pageNum = 1;
+  loadArticles();
+})
+
+onMounted(() => {
+  loadArticles();
+})
 
 function goEdit(id: number) {
   router.push({ name: "ArticleEdit", params: { id } });
 }
 
 async function goCreate() {
-  // router.push({ name: "ArticleCreate" });
   const res = await http.post<D.Result<number>>("/posts/create", {
     data: {
       title: "新建文章",
@@ -46,121 +52,109 @@ function statusLabel(status: D.ArticleStatus) {
 function typeLabel(type: D.PostType) {
   return type === "images" ? "图文" : "文章";
 }
+
+function displayTitle(article: D.Article): string {
+  if (article.status === "draft") {
+    return article.draftTitle || article.title || "";
+  }
+  if (article.draftTitle != null && article.draftTitle !== article.title) {
+    return `${article.title} ← ${article.draftTitle}`;
+  }
+  return article.title || "";
+}
+
+function hasUnpublishedDraft(article: D.Article): boolean {
+  if (article.status === "draft") return true;
+  if (!article.draftContent && !article.draftTitle) return false;
+  const titleChanged = article.draftTitle != null && article.draftTitle?.trim() !== article.title?.trim();
+  const contentChanged = !!article.draftContent && article.draftContent?.trim() !== article.content?.trim();
+  return titleChanged || contentChanged
+}
+
+function onPageChange(p: number) {
+  articleStore.pageNum = p;
+  loadArticles();
+}
+
+function onSizeChange(s: number) {
+  articleStore.pageSize = s;
+  articleStore.pageNum = 1;
+  loadArticles();
+}
 </script>
 
 <template>
   <div :class="s.page">
     <div :class="s.header">
       <div>
-        <!-- <p :class="s.tag">文章</p> -->
         <h2 :class="s.heading">文章管理</h2>
         <p :class="s.desc">查看并编辑所有文章，支持搜索与快速创建</p>
       </div>
       <div :class="s.headerActions">
-        <el-input
-          v-model="keyword"
-          placeholder="搜索标题或内容"
-          clearable
-          :class="s.searchInput"
-          size="large"
-        >
+        <el-input v-model="keyword" placeholder="搜索标题或内容" clearable :class="s.searchInput" size="large">
           <template #prefix>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#94a3b8"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
           </template>
         </el-input>
         <el-button type="primary" size="large" @click="goCreate">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            style="margin-right: 4px"
-          >
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
           新建文章
         </el-button>
       </div>
     </div>
 
     <div :class="s.tableCard">
-      <el-table :data="filteredArticles" size="default" style="width: 100%">
+      <el-table :data="articleStore.articles" v-loading="loading" size="default" style="width: 100%">
         <el-table-column prop="title" label="标题" min-width="240">
           <template #default="{ row }">
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="goEdit(row.id)"
-              :class="s.linkTitle"
-            >
-              {{ row.title }}
+            <el-link type="primary" :underline="false" @click="goEdit(row.id)" :class="s.linkTitle">
+              {{ displayTitle(row) }}
             </el-link>
           </template>
         </el-table-column>
         <el-table-column label="类型" width="100" align="center">
           <template #default="{ row }">
-            <el-tag
-              :type="row.postType === 'images' ? 'success' : 'primary'"
-              effect="light"
-              size="small"
-            >
+            <el-tag :type="row.postType === 'images' ? 'success' : 'primary'" effect="light" size="small">
               {{ typeLabel(row.postType) }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="状态" width="100" align="center">
           <template #default="{ row }">
-            <el-tag
-              :type="row.status === 'published' ? 'success' : 'warning'"
-              effect="light"
-              size="small"
-            >
+            <el-tag :type="row.status === 'published' ? 'success' : 'warning'" effect="light" size="small">
               <template #default>
-                <span
-                  :class="
-                    row.status === 'published'
-                      ? s.statusDotGreen
-                      : s.statusDotAmber
-                  "
-                />
+                <span :class="row.status === 'published'
+                  ? s.statusDotGreen
+                  : s.statusDotAmber
+                  " />
                 {{ statusLabel(row.status) }}
               </template>
             </el-tag>
           </template>
         </el-table-column>
+        <el-table-column label="草稿" width="130" align="center">
+          <template #default="{ row }">
+            <el-tag v-if="row.status === 'draft'" type="warning" effect="light" size="small">
+              未发布
+            </el-tag>
+            <el-tag v-else-if="hasUnpublishedDraft(row)" type="danger" effect="light" size="small">
+              有未发布修改
+            </el-tag>
+            <span v-else :class="s.noDraft">—</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="createdAt" label="创建时间" width="170" />
         <el-table-column prop="updatedAt" label="更新时间" width="170" />
-        <el-table-column
-          prop="viewCount"
-          label="浏览"
-          width="80"
-          align="center"
-        />
+        <el-table-column prop="viewCount" label="浏览" width="80" align="center" />
         <el-table-column label="操作" width="120" align="center" fixed="right">
           <template #default="{ row }">
-            <el-button type="primary" size="small" @click="goEdit(row.id)"
-              >编辑</el-button
-            >
+            <el-button type="primary" link size="small" @click="goEdit(row.id)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
+      <div :class="s.paginationWrapper">
+        <el-pagination v-model:current-page="articleStore.pageNum" v-model:page-size="articleStore.pageSize"
+          :total="articleStore.total" :page-sizes="[10, 20, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
+          background @current-change="onPageChange" @size-change="onSizeChange" />
+      </div>
     </div>
   </div>
 </template>
@@ -245,5 +239,16 @@ function typeLabel(type: D.PostType) {
   background: #f59e0b;
   margin-right: 5px;
   vertical-align: middle;
+}
+
+.noDraft {
+  color: #cbd5e1;
+}
+
+.paginationWrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 20px;
+  border-top: 1px solid #e2e8f0;
 }
 </style>

@@ -3,6 +3,7 @@ package com.example.springdemo.entity;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -13,6 +14,7 @@ public class PostEntity {
    */
   private Long id;
 
+  @JsonIgnore
   private Long userID;
 
   private String title;

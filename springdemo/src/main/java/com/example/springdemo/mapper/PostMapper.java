@@ -1,5 +1,7 @@
 package com.example.springdemo.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,4 +19,12 @@ public interface PostMapper {
 
   public int updateDraftArticleById(
       @Param("p") PostEntity p);
+
+  public int publishArticleById(
+      @Param("p") PostEntity p);
+
+  public int unpublishArticleById(
+      @Param("p") PostEntity p);
+
+  public List<PostEntity> listPosts(@Param("userID") Long userID, @Param("keyword") String keyword);
 }
