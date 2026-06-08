@@ -88,11 +88,12 @@ const onRegister = async () => {
         <div :class="s.logoWrap">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
             <rect width="40" height="40" rx="10" fill="url(#lgrad)" />
-            <path d="M13 28V12l7 10 7-10v16" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M13 28V12l7 10 7-10v16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+              stroke-linejoin="round" fill="none" />
             <defs>
               <linearGradient id="lgrad" x1="0" y1="0" x2="40" y2="40">
-                <stop stop-color="#6366f1"/>
-                <stop offset="1" stop-color="#8b5cf6"/>
+                <stop stop-color="#6366f1" />
+                <stop offset="1" stop-color="#8b5cf6" />
               </linearGradient>
             </defs>
           </svg>
@@ -105,14 +106,10 @@ const onRegister = async () => {
 
       <el-form ref="formRef" :rules="rules" :model="form" label-width="0" :class="s.form">
         <el-form-item prop="username">
-          <el-input
-            v-model="form.username"
-            placeholder="用户名"
-            :prefix-icon="false"
-            size="large"
-          >
+          <el-input v-model="form.username" placeholder="用户名" :prefix-icon="false" size="large">
             <template #prefix>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
@@ -121,13 +118,10 @@ const onRegister = async () => {
         </el-form-item>
 
         <el-form-item v-if="type === '1'" prop="email">
-          <el-input
-            v-model="form.email"
-            placeholder="邮箱"
-            size="large"
-          >
+          <el-input v-model="form.email" placeholder="邮箱" size="large">
             <template #prefix>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                 <polyline points="22,6 12,13 2,6" />
               </svg>
@@ -136,14 +130,10 @@ const onRegister = async () => {
         </el-form-item>
 
         <el-form-item prop="password">
-          <el-input
-            v-model="form.password"
-            placeholder="密码"
-            type="password"
-            size="large"
-          >
+          <el-input v-model="form.password" placeholder="密码" type="password" size="large">
             <template #prefix>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                 <path d="M7 11V7a5 5 0 0110 0v4" />
               </svg>
@@ -152,24 +142,12 @@ const onRegister = async () => {
         </el-form-item>
 
         <el-form-item>
-          <el-button
-            v-if="type === '0'"
-            type="primary"
-            size="large"
-            :loading="loading"
-            :class="s.submitBtn"
-            @click="onLogin"
-          >
+          <el-button v-if="type === '0'" type="primary" size="large" :loading="loading" :class="s.submitBtn"
+            @click="onLogin">
             登录
           </el-button>
-          <el-button
-            v-if="type === '1'"
-            type="primary"
-            size="large"
-            :loading="loading"
-            :class="s.submitBtn"
-            @click="onRegister"
-          >
+          <el-button v-if="type === '1'" type="primary" size="large" :loading="loading" :class="s.submitBtn"
+            @click="onRegister">
             注册
           </el-button>
         </el-form-item>
@@ -240,6 +218,7 @@ const onRegister = async () => {
     opacity: 0;
     transform: translateY(24px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -274,13 +253,16 @@ const onRegister = async () => {
   display: flex;
   justify-content: center;
   margin-bottom: 28px;
+
   :global(.el-segmented) {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.08);
+
     .el-segmented__item {
       color: #94a3b8;
       font-weight: 500;
       min-width: 100px;
+
       &.is-selected {
         background: linear-gradient(135deg, #6366f1, #4f46e5);
         color: #fff;
