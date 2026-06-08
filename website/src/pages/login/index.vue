@@ -10,6 +10,7 @@ const form = reactive<D.User>({
   email: "",
 });
 
+
 const router = useRouter();
 const options = reactive([
   { label: "登录", value: "0" },
@@ -98,7 +99,7 @@ const onRegister = async () => {
             </defs>
           </svg>
         </div>
-        <h1 :class="s.title">Java Learn</h1>
+        <!-- <h1 :class="s.title">Java Learn</h1> -->
         <p :class="s.desc">文章管理后台</p>
       </div>
 

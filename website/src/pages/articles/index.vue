@@ -3,6 +3,7 @@ import { onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useArticleStore } from "@/store/useArticleStore";
 import http from "@/request";
+import { ElMessage } from "element-plus";
 
 const router = useRouter();
 const keyword = ref("");
@@ -12,7 +13,11 @@ const articleStore = useArticleStore();
 async function loadArticles() {
   loading.value = true;
   try {
-    await articleStore.queryArticles({ keyword: keyword.value || undefined, pageNum: articleStore.pageNum, pageSize: articleStore.pageSize });
+    await articleStore.queryArticles({
+      keyword: keyword.value || undefined,
+      pageNum: articleStore.pageNum,
+      pageSize: articleStore.pageSize,
+    });
   } finally {
     loading.value = false;
   }
@@ -21,11 +26,11 @@ async function loadArticles() {
 watch(keyword, () => {
   articleStore.pageNum = 1;
   loadArticles();
-})
+});
 
 onMounted(() => {
   loadArticles();
-})
+});
 
 function goEdit(id: number) {
   router.push({ name: "ArticleEdit", params: { id } });
@@ -39,8 +44,7 @@ async function goCreate() {
       postType: "article",
     },
   });
-  console.log("res", res);
-  if (res.data) {
+  if (res?.data) {
     router.push({ name: "ArticleEdit", params: { id: res.data } });
   }
 }
@@ -66,9 +70,13 @@ function displayTitle(article: D.Article): string {
 function hasUnpublishedDraft(article: D.Article): boolean {
   if (article.status === "draft") return true;
   if (!article.draftContent && !article.draftTitle) return false;
-  const titleChanged = article.draftTitle != null && article.draftTitle?.trim() !== article.title?.trim();
-  const contentChanged = !!article.draftContent && article.draftContent?.trim() !== article.content?.trim();
-  return titleChanged || contentChanged
+  const titleChanged =
+    article.draftTitle != null &&
+    article.draftTitle?.trim() !== article.title?.trim();
+  const contentChanged =
+    !!article.draftContent &&
+    article.draftContent?.trim() !== article.content?.trim();
+  return titleChanged || contentChanged;
 }
 
 function onPageChange(p: number) {
@@ -81,6 +89,16 @@ function onSizeChange(s: number) {
   articleStore.pageNum = 1;
   loadArticles();
 }
+
+async function onDel(d: string) {
+  const b = await http<D.Result<boolean>>(`/posts/detail/${d}`, {
+    method: "DELETE",
+  });
+  if (b.data) {
+    ElMessage("删除成功！");
+    loadArticles();
+  }
+}
 </script>
 
 <template>
@@ -91,9 +109,14 @@ function onSizeChange(s: number) {
         <p :class="s.desc">查看并编辑所有文章，支持搜索与快速创建</p>
       </div>
       <div :class="s.headerActions">
-        <el-input v-model="keyword" placeholder="搜索标题或内容" clearable :class="s.searchInput" size="large">
-          <template #prefix>
-          </template>
+        <el-input
+          v-model="keyword"
+          placeholder="搜索标题或内容"
+          clearable
+          :class="s.searchInput"
+          size="large"
+        >
+          <template #prefix> </template>
         </el-input>
         <el-button type="primary" size="large" @click="goCreate">
           新建文章
@@ -102,29 +125,50 @@ function onSizeChange(s: number) {
     </div>
 
     <div :class="s.tableCard">
-      <el-table :data="articleStore.articles" v-loading="loading" size="default" style="width: 100%">
+      <el-table
+        :data="articleStore.articles"
+        v-loading="loading"
+        size="default"
+        style="width: 100%"
+      >
         <el-table-column prop="title" label="标题" min-width="240">
           <template #default="{ row }">
-            <el-link type="primary" :underline="false" @click="goEdit(row.id)" :class="s.linkTitle">
+            <el-link
+              type="primary"
+              :underline="false"
+              @click="goEdit(row.id)"
+              :class="s.linkTitle"
+            >
               {{ displayTitle(row) }}
             </el-link>
           </template>
         </el-table-column>
         <el-table-column label="类型" width="100" align="center">
           <template #default="{ row }">
-            <el-tag :type="row.postType === 'images' ? 'success' : 'primary'" effect="light" size="small">
+            <el-tag
+              :type="row.postType === 'images' ? 'success' : 'primary'"
+              effect="light"
+              size="small"
+            >
               {{ typeLabel(row.postType) }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="状态" width="100" align="center">
           <template #default="{ row }">
-            <el-tag :type="row.status === 'published' ? 'success' : 'warning'" effect="light" size="small">
+            <el-tag
+              :type="row.status === 'published' ? 'success' : 'warning'"
+              effect="light"
+              size="small"
+            >
               <template #default>
-                <span :class="row.status === 'published'
-                  ? s.statusDotGreen
-                  : s.statusDotAmber
-                  " />
+                <span
+                  :class="
+                    row.status === 'published'
+                      ? s.statusDotGreen
+                      : s.statusDotAmber
+                  "
+                />
                 {{ statusLabel(row.status) }}
               </template>
             </el-tag>
@@ -132,10 +176,20 @@ function onSizeChange(s: number) {
         </el-table-column>
         <el-table-column label="草稿" width="130" align="center">
           <template #default="{ row }">
-            <el-tag v-if="row.status === 'draft'" type="warning" effect="light" size="small">
+            <el-tag
+              v-if="row.status === 'draft'"
+              type="warning"
+              effect="light"
+              size="small"
+            >
               未发布
             </el-tag>
-            <el-tag v-else-if="hasUnpublishedDraft(row)" type="danger" effect="light" size="small">
+            <el-tag
+              v-else-if="hasUnpublishedDraft(row)"
+              type="danger"
+              effect="light"
+              size="small"
+            >
               有未发布修改
             </el-tag>
             <span v-else :class="s.noDraft">—</span>
@@ -143,17 +197,34 @@ function onSizeChange(s: number) {
         </el-table-column>
         <el-table-column prop="createdAt" label="创建时间" width="170" />
         <el-table-column prop="updatedAt" label="更新时间" width="170" />
-        <el-table-column prop="viewCount" label="浏览" width="80" align="center" />
+        <el-table-column
+          prop="viewCount"
+          label="浏览"
+          width="80"
+          align="center"
+        />
         <el-table-column label="操作" width="120" align="center" fixed="right">
           <template #default="{ row }">
-            <el-button type="primary" link size="small" @click="goEdit(row.id)">编辑</el-button>
+            <el-button type="primary" link size="small" @click="goEdit(row.id)"
+              >编辑</el-button
+            >
+            <el-button type="danger" link size="small" @click="onDel(row.id)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
       <div :class="s.paginationWrapper">
-        <el-pagination v-model:current-page="articleStore.pageNum" v-model:page-size="articleStore.pageSize"
-          :total="articleStore.total" :page-sizes="[10, 20, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
-          background @current-change="onPageChange" @size-change="onSizeChange" />
+        <el-pagination
+          v-model:current-page="articleStore.pageNum"
+          v-model:page-size="articleStore.pageSize"
+          :total="articleStore.total"
+          :page-sizes="[10, 20, 50, 100]"
+          layout="total, sizes, prev, pager, next, jumper"
+          background
+          @current-change="onPageChange"
+          @size-change="onSizeChange"
+        />
       </div>
     </div>
   </div>

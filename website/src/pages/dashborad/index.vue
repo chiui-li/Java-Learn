@@ -176,11 +176,11 @@ function goCreate() {
           <span>新建文章</span>
         </div>
         <div :class="s.quickCard" @click="goArticles">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"
+          <!-- <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <path
               d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-          </svg>
+          </svg> -->
           <span>管理文章</span>
         </div>
       </div>

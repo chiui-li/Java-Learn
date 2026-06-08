@@ -46,4 +46,11 @@ public class PostService {
     Page<PostEntity> pageInfo = new Page<PostEntity>(postList);
     return pageInfo;
   }
+
+  public Boolean delPost(Long userID, Long articleId) {
+    if (postMapper.delPostById(articleId, userID) > 0) {
+      return true;
+    }
+    return false;
+  }
 }

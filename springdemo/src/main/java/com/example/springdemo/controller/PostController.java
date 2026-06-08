@@ -14,6 +14,7 @@ import com.example.springdemo.utils.Result;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 // import org.springframework.web.bind.annotation.RequestParam;
@@ -86,5 +87,13 @@ public class PostController {
       return Result.success(posts, null);
     }
     return Result.error("暂无文章");
+  }
+
+  @DeleteMapping("/detail/{id}")
+  public Result<Boolean> delPostById(@RequestAttribute("userID") Long userID, @PathVariable Long id) {
+    if (pService.delPost(id, userID)) {
+      return Result.success(true, null);
+    }
+    return Result.error("删除失败");
   }
 }

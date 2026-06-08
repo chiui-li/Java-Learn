@@ -27,5 +27,4 @@ public interface UserMapper {
 
   // public List<User> findUserByName(
   // @Param("name") String name);
-
 }

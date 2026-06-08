@@ -27,4 +27,6 @@ public interface PostMapper {
       @Param("p") PostEntity p);
 
   public List<PostEntity> listPosts(@Param("userID") Long userID, @Param("keyword") String keyword);
+
+  public int delPostById(@Param("articleId") Long articleId, @Param("userID") Long userID);
 }
