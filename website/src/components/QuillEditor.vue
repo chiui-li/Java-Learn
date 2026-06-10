@@ -2,25 +2,40 @@
 import Quill, { Delta } from "quill";
 import { onMounted, ref } from "vue";
 import "quill/dist/quill.snow.css";
+import { getFileUrl } from "@/utils/upload";
+import ImageBlot from "@/components/quill/ImageBlot";
+import ImageResize from "@/components/quill/ImageResize";
+
+// 放行 blob: URL（getFileUrl 对接 OSS 后返回 http/https，届时自动走默认校验）
+const VideoFormat = Quill.import("formats/video");
+const videoSanitize = VideoFormat.sanitize;
+VideoFormat.sanitize = (url: string) => {
+  if (url.startsWith("blob:")) return url;
+  return videoSanitize(url);
+};
+
+Quill.register("formats/image", ImageBlot);
+Quill.register("modules/ImageResize", ImageResize);
+
 const toolbarOptions = [
-  ["bold", "italic", "underline", "strike"], // toggled buttons
+  ["bold", "italic", "underline", "strike"],
   ["blockquote", "code-block"],
   ["link", "image", "video", "formula"],
 
-  [{ header: 1 }, { header: 2 }], // custom button values
+  [{ header: 1 }, { header: 2 }],
   [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-  [{ script: "sub" }, { script: "super" }], // superscript/subscript
-  [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-  [{ direction: "rtl" }], // text direction
+  [{ script: "sub" }, { script: "super" }],
+  [{ indent: "-1" }, { indent: "+1" }],
+  [{ direction: "rtl" }],
 
-  [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+  [{ size: ["small", false, "large", "huge"] }],
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
 
-  [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+  [{ color: [] }, { background: [] }],
   [{ font: [] }],
   [{ align: [] }],
 
-  ["clean"], // remove formatting button
+  ["clean"],
 ];
 
 const editorContainer = ref<HTMLDivElement | null>(null);
@@ -34,14 +49,44 @@ const props = defineProps<{
   modelValue: Delta;
 }>();
 
+function createUploadHandler(embedType: "image" | "video") {
+  return () => {
+    if (!quill) return;
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = embedType === "image" ? "image/*" : "video/*";
+    input.addEventListener("change", async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      try {
+        // 核心上传步骤，对接真实 OSS 后替换 getFileUrl 实现
+        const url = await getFileUrl(file);
+        const range = quill!.getSelection(true);
+        const embedValue = embedType === "image" ? { url } : url;
+        quill!.insertEmbed(range.index, embedType, embedValue, "user");
+        // quill!.setSelection(range.index + 1);
+      } catch (e) {
+        console.error(`[QuillEditor] ${embedType} upload failed:`, e);
+      }
+    });
+    input.click();
+  };
+}
+
 onMounted(() => {
   if (editorContainer.value) {
     quill = new Quill(editorContainer.value, {
       theme: "snow",
       modules: {
-        toolbar: toolbarOptions,
+        toolbar: {
+          container: toolbarOptions,
+          handlers: {
+            image: createUploadHandler("image"),
+            video: createUploadHandler("video"),
+          },
+        },
+        ImageResize: true,
       },
-      // toolbar: "#toolbar",
     });
     try {
       quill.setContents(
@@ -50,6 +95,9 @@ onMounted(() => {
           : props.modelValue,
       );
     } catch {
+      console.error(
+        "[QuillEditor] Invalid initial content, loading empty editor",
+      );
       quill.setContents(new Delta());
     }
     quill.on(Quill.events.TEXT_CHANGE, () => {
@@ -61,7 +109,6 @@ onMounted(() => {
 
 <template>
   <div :class="s['quill-editor']">
-    <!-- <div ref="toolbar" id="toolbar" class="s['toolbar']"></div> -->
     <div ref="editorContainer" class="s['editor-container']"></div>
   </div>
 </template>

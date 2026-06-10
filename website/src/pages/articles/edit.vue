@@ -48,7 +48,10 @@ async function flushDraft() {
     await http.post(`/posts/detail/update/${id}/draft`, {
       data: {
         ...articleForm.value,
-        draftContent: JSON.stringify(draftContent.value),
+        draftContent:
+          typeof draftContent.value === "string"
+            ? draftContent.value
+            : JSON.stringify(draftContent.value),
       },
     });
     saved.value = true;
