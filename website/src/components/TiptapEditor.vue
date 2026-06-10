@@ -11,25 +11,33 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { common, createLowlight } from "lowlight";
 import { getFileUrl } from "@/utils/upload";
 
-const lowlight = createLowlight(common)
+const lowlight = createLowlight(common);
 
 const VideoNode = Node.create({
   name: "video",
   group: "block",
   atom: true,
   addAttributes() {
-    return { src: { default: null, parseHTML: (el) => el.getAttribute("src") } }
+    return {
+      src: { default: null, parseHTML: (el) => el.getAttribute("src") },
+    };
   },
-  parseHTML() { return [{ tag: "video" }] },
-  renderHTML({ HTMLAttributes }) { return ["video", { controls: true, ...HTMLAttributes }] },
+  parseHTML() {
+    return [{ tag: "video" }];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ["video", { controls: true, ...HTMLAttributes }];
+  },
   addCommands() {
     return {
-      setVideo: (options) => ({ commands }) => {
-        return commands.insertContent({ type: this.name, attrs: options })
-      },
-    }
+      setVideo:
+        (options) =>
+        ({ commands }) => {
+          return commands.insertContent({ type: this.name, attrs: options });
+        },
+    };
   },
-})
+});
 
 const props = defineProps<{ modelValue?: string }>();
 const emit = defineEmits<{ "update:modelValue": [value: string] }>();
@@ -46,7 +54,9 @@ const editor = useEditor({
   extensions: [
     StarterKit.configure({
       heading: { levels: [1, 2, 3] },
-      codeBlock: false,
+      codeBlock: {
+        tabSize: 2,
+      },
     }),
     Underline,
     Link.configure({
@@ -57,7 +67,16 @@ const editor = useEditor({
       placeholder: "请输入文章正文...",
     }),
     CodeBlockLowlight.configure({ lowlight }),
-    Image.configure({ inline: false }),
+    Image.configure({
+      inline: true,
+      resize: {
+        enabled: true,
+        directions: ["top", "bottom", "left", "right"], // can be any direction or diagonal combination
+        minWidth: 50,
+        minHeight: 50,
+        alwaysPreserveAspectRatio: true,
+      },
+    }),
     VideoNode,
   ],
   onUpdate({ editor }) {
@@ -69,7 +88,7 @@ watch(
   () => props.modelValue,
   (val) => {
     if (editor.value && val !== editor.value.getHTML()) {
-      editor.value.commands.setContent(val || '', {});
+      editor.value.commands.setContent(val || "", {});
     }
   },
 );
@@ -159,37 +178,89 @@ function uploadVideo(e) {
   <div class="editorWrap" v-if="editor">
     <div class="toolbar">
       <div class="toolbarGroup">
-        <button type="button" :class="['toolBtn', { active: editor.isActive('bold') }]" title="加粗"
-          @click="exec(() => editor?.chain().toggleBold().run())">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          :class="['toolBtn', { active: editor.isActive('bold') }]"
+          title="加粗"
+          @click="exec(() => editor?.chain().toggleBold().run())"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z" />
             <path d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z" />
           </svg>
         </button>
-        <button type="button" :class="['toolBtn', { active: editor.isActive('italic') }]" title="斜体"
-          @click="exec(() => editor?.chain().toggleItalic().run())">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          :class="['toolBtn', { active: editor.isActive('italic') }]"
+          title="斜体"
+          @click="exec(() => editor?.chain().toggleItalic().run())"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="19" y1="4" x2="10" y2="4" />
             <line x1="14" y1="20" x2="5" y2="20" />
             <line x1="15" y1="4" x2="9" y2="20" />
           </svg>
         </button>
-        <button type="button" :class="['toolBtn', { active: editor.isActive('underline') }]" title="下划线"
-          @click="exec(() => editor?.chain().toggleUnderline().run())">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          :class="['toolBtn', { active: editor.isActive('underline') }]"
+          title="下划线"
+          @click="exec(() => editor?.chain().toggleUnderline().run())"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M6 3v7a6 6 0 006 6 6 6 0 006-6V3" />
             <line x1="4" y1="21" x2="20" y2="21" />
           </svg>
         </button>
-        <button type="button" :class="['toolBtn', { active: editor.isActive('strike') }]" title="删除线"
-          @click="exec(() => editor?.chain().toggleStrike().run())">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17.12 18.12c-.95.64-2.23 1.12-3.62 1.12-3.31 0-5.5-1.57-5.5-4.5 0-1.12.25-2.02.81-2.74" />
-            <path d="M6.88 5.88C7.8 5.08 9.14 4.5 10.5 4.5c3.31 0 5.5 1.57 5.5 4.5 0 .54-.09 1.04-.25 1.5" />
+        <button
+          type="button"
+          :class="['toolBtn', { active: editor.isActive('strike') }]"
+          title="删除线"
+          @click="exec(() => editor?.chain().toggleStrike().run())"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M17.12 18.12c-.95.64-2.23 1.12-3.62 1.12-3.31 0-5.5-1.57-5.5-4.5 0-1.12.25-2.02.81-2.74"
+            />
+            <path
+              d="M6.88 5.88C7.8 5.08 9.14 4.5 10.5 4.5c3.31 0 5.5 1.57 5.5 4.5 0 .54-.09 1.04-.25 1.5"
+            />
             <line x1="3" y1="12" x2="21" y2="12" />
           </svg>
         </button>
@@ -198,10 +269,25 @@ function uploadVideo(e) {
       <div class="divider"></div>
 
       <div class="toolbarGroup">
-        <button type="button" :class="['toolBtn', { active: editor.isActive('heading', { level: 1 }) }]" title="标题 1"
-          @click="setHeading(1)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          :class="[
+            'toolBtn',
+            { active: editor.isActive('heading', { level: 1 }) },
+          ]"
+          title="标题 1"
+          @click="setHeading(1)"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M3 12h10" />
             <path d="M3 6v12" />
             <path d="M13 6v12" />
@@ -209,10 +295,25 @@ function uploadVideo(e) {
             <path d="M21 10l-3 4" />
           </svg>
         </button>
-        <button type="button" :class="['toolBtn', { active: editor.isActive('heading', { level: 2 }) }]" title="标题 2"
-          @click="setHeading(2)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          :class="[
+            'toolBtn',
+            { active: editor.isActive('heading', { level: 2 }) },
+          ]"
+          title="标题 2"
+          @click="setHeading(2)"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M3 12h10" />
             <path d="M3 6v12" />
             <path d="M13 6v12" />
@@ -220,11 +321,28 @@ function uploadVideo(e) {
             <path d="M20 12l-3 4" />
           </svg>
         </button>
-        <button type="button"
-          :class="['toolBtn', { active: editor.isActive('paragraph') && !editor.isActive('heading') }]" title="正文"
-          @click="setHeading(null)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          :class="[
+            'toolBtn',
+            {
+              active:
+                editor.isActive('paragraph') && !editor.isActive('heading'),
+            },
+          ]"
+          title="正文"
+          @click="setHeading(null)"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="3" y1="6" x2="21" y2="6" />
             <line x1="3" y1="10" x2="15" y2="10" />
             <line x1="3" y1="14" x2="18" y2="14" />
@@ -236,10 +354,22 @@ function uploadVideo(e) {
       <div class="divider"></div>
 
       <div class="toolbarGroup">
-        <button type="button" :class="['toolBtn', { active: editor.isActive('bulletList') }]" title="无序列表"
-          @click="exec(() => editor?.chain().toggleBulletList().run())">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          :class="['toolBtn', { active: editor.isActive('bulletList') }]"
+          title="无序列表"
+          @click="exec(() => editor?.chain().toggleBulletList().run())"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="9" y1="6" x2="21" y2="6" />
             <line x1="9" y1="12" x2="21" y2="12" />
             <line x1="9" y1="18" x2="21" y2="18" />
@@ -248,10 +378,22 @@ function uploadVideo(e) {
             <circle cx="4" cy="18" r="1" />
           </svg>
         </button>
-        <button type="button" :class="['toolBtn', { active: editor.isActive('orderedList') }]" title="有序列表"
-          @click="exec(() => editor?.chain().toggleOrderedList().run())">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          :class="['toolBtn', { active: editor.isActive('orderedList') }]"
+          title="有序列表"
+          @click="exec(() => editor?.chain().toggleOrderedList().run())"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="10" y1="6" x2="21" y2="6" />
             <line x1="10" y1="12" x2="21" y2="12" />
             <line x1="10" y1="18" x2="21" y2="18" />
@@ -260,28 +402,66 @@ function uploadVideo(e) {
             <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" />
           </svg>
         </button>
-        <button type="button" :class="['toolBtn', { active: editor.isActive('blockquote') }]" title="引用"
-          @click="exec(() => editor?.chain().toggleBlockquote().run())">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          :class="['toolBtn', { active: editor.isActive('blockquote') }]"
+          title="引用"
+          @click="exec(() => editor?.chain().toggleBlockquote().run())"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path
-              d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" />
+              d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"
+            />
             <path
-              d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" />
+              d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"
+            />
           </svg>
         </button>
-        <button type="button" :class="['toolBtn', { active: editor.isActive('code') }]" title="行内代码"
-          @click="exec(() => editor?.chain().toggleCode().run())">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          :class="['toolBtn', { active: editor.isActive('code') }]"
+          title="行内代码"
+          @click="exec(() => editor?.chain().toggleCode().run())"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <polyline points="10 15 6 12 10 9" />
             <polyline points="14 9 18 12 14 15" />
           </svg>
         </button>
-        <button type="button" :class="['toolBtn', { active: editor.isActive('codeBlock') }]" title="代码块"
-          @click="exec(() => editor?.chain().toggleCodeBlock().run())">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          :class="['toolBtn', { active: editor.isActive('codeBlock') }]"
+          title="代码块"
+          @click="exec(() => editor?.chain().toggleCodeBlock().run())"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <rect x="3" y="4" width="18" height="16" rx="2" />
             <line x1="8" y1="10" x2="16" y2="10" />
             <line x1="8" y1="14" x2="14" y2="14" />
@@ -292,27 +472,70 @@ function uploadVideo(e) {
       <div class="divider"></div>
 
       <div class="toolbarGroup">
-        <button type="button" :class="['toolBtn', { active: editor.isActive('link') }]" title="链接" @click="openLink">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
-            <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+        <button
+          type="button"
+          :class="['toolBtn', { active: editor.isActive('link') }]"
+          title="链接"
+          @click="openLink"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"
+            />
+            <path
+              d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"
+            />
           </svg>
         </button>
       </div>
 
       <div class="toolbarGroup">
-        <button type="button" :class="['toolBtn']" title="图片" @click="imageDialog = true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          :class="['toolBtn']"
+          title="图片"
+          @click="imageDialog = true"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <rect x="3" y="3" width="18" height="18" rx="2" />
             <circle cx="8.5" cy="8.5" r="1.5" />
             <polyline points="21 15 16 10 5 21" />
           </svg>
         </button>
-        <button type="button" :class="['toolBtn']" title="视频" @click="videoDialog = true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          :class="['toolBtn']"
+          title="视频"
+          @click="videoDialog = true"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <polygon points="5 3 19 12 5 21 5 3" />
           </svg>
         </button>
@@ -321,16 +544,42 @@ function uploadVideo(e) {
       <div class="divider"></div>
 
       <div class="toolbarGroup">
-        <button type="button" class="toolBtn" title="撤销" @click="exec(() => editor.chain().undo().run())">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          class="toolBtn"
+          title="撤销"
+          @click="exec(() => editor.chain().undo().run())"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <polyline points="1 4 1 10 7 10" />
             <path d="M3.51 15a9 9 0 102.13-9.36L1 10" />
           </svg>
         </button>
-        <button type="button" class="toolBtn" title="重做" @click="exec(() => editor.chain().redo().run())">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
+        <button
+          type="button"
+          class="toolBtn"
+          title="重做"
+          @click="exec(() => editor.chain().redo().run())"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <polyline points="23 4 23 10 17 10" />
             <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
           </svg>
@@ -342,22 +591,42 @@ function uploadVideo(e) {
 
     <!-- Link dialog -->
     <teleport to="body">
-      <div :class="['overlay', { show: linkDialog }]" @click.self="linkDialog = false">
+      <div
+        :class="['overlay', { show: linkDialog }]"
+        @click.self="linkDialog = false"
+      >
         <div class="linkModal">
           <div class="linkModalHeader">
             <span>插入链接</span>
             <button type="button" class="linkClose" @click="linkDialog = false">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
           </div>
-          <input v-model="linkUrl" placeholder="请输入链接地址" class="linkInput" @keyup.enter="applyLink" />
+          <input
+            v-model="linkUrl"
+            placeholder="请输入链接地址"
+            class="linkInput"
+            @keyup.enter="applyLink"
+          />
           <div class="linkActions">
-            <button type="button" class="linkRemoveBtn" @click="removeLink">移除链接</button>
-            <button type="button" class="linkApplyBtn" @click="applyLink">确定</button>
+            <button type="button" class="linkRemoveBtn" @click="removeLink">
+              移除链接
+            </button>
+            <button type="button" class="linkApplyBtn" @click="applyLink">
+              确定
+            </button>
           </div>
         </div>
       </div>
@@ -365,23 +634,52 @@ function uploadVideo(e) {
 
     <!-- Image dialog -->
     <teleport to="body">
-      <div :class="['overlay', { show: imageDialog }]" @click.self="imageDialog = false">
+      <div
+        :class="['overlay', { show: imageDialog }]"
+        @click.self="imageDialog = false"
+      >
         <div class="linkModal">
           <div class="linkModalHeader">
             <span>插入图片</span>
-            <button type="button" class="linkClose" @click="imageDialog = false">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
+            <button
+              type="button"
+              class="linkClose"
+              @click="imageDialog = false"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
           </div>
           <p class="uploadHint">粘贴图片地址或选择文件上传</p>
-          <input v-model="imageUrl" placeholder="请输入图片地址" class="linkInput" @keyup.enter="addImage" />
+          <input
+            v-model="imageUrl"
+            placeholder="请输入图片地址"
+            class="linkInput"
+            @keyup.enter="addImage"
+          />
           <label class="uploadBtn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="margin-right: 6px"
+            >
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
               <polyline points="17 8 12 3 7 8" />
               <line x1="12" y1="3" x2="12" y2="15" />
@@ -390,8 +688,16 @@ function uploadVideo(e) {
             <input type="file" accept="image/*" hidden @change="uploadImage" />
           </label>
           <div class="linkActions">
-            <button type="button" class="linkRemoveBtn" @click="imageDialog = false">取消</button>
-            <button type="button" class="linkApplyBtn" @click="addImage">插入</button>
+            <button
+              type="button"
+              class="linkRemoveBtn"
+              @click="imageDialog = false"
+            >
+              取消
+            </button>
+            <button type="button" class="linkApplyBtn" @click="addImage">
+              插入
+            </button>
           </div>
         </div>
       </div>
@@ -399,23 +705,52 @@ function uploadVideo(e) {
 
     <!-- Video dialog -->
     <teleport to="body">
-      <div :class="['overlay', { show: videoDialog }]" @click.self="videoDialog = false">
+      <div
+        :class="['overlay', { show: videoDialog }]"
+        @click.self="videoDialog = false"
+      >
         <div class="linkModal">
           <div class="linkModalHeader">
             <span>插入视频</span>
-            <button type="button" class="linkClose" @click="videoDialog = false">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
+            <button
+              type="button"
+              class="linkClose"
+              @click="videoDialog = false"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
           </div>
           <p class="uploadHint">粘贴视频链接或选择文件上传</p>
-          <input v-model="videoUrl" placeholder="请输入视频地址" class="linkInput" @keyup.enter="addVideo" />
+          <input
+            v-model="videoUrl"
+            placeholder="请输入视频地址"
+            class="linkInput"
+            @keyup.enter="addVideo"
+          />
           <label class="uploadBtn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="margin-right: 6px"
+            >
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
               <polyline points="17 8 12 3 7 8" />
               <line x1="12" y1="3" x2="12" y2="15" />
@@ -424,8 +759,16 @@ function uploadVideo(e) {
             <input type="file" accept="video/*" hidden @change="uploadVideo" />
           </label>
           <div class="linkActions">
-            <button type="button" class="linkRemoveBtn" @click="videoDialog = false">取消</button>
-            <button type="button" class="linkApplyBtn" @click="addVideo">插入</button>
+            <button
+              type="button"
+              class="linkRemoveBtn"
+              @click="videoDialog = false"
+            >
+              取消
+            </button>
+            <button type="button" class="linkApplyBtn" @click="addVideo">
+              插入
+            </button>
           </div>
         </div>
       </div>

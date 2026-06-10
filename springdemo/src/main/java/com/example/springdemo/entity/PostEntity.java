@@ -16,6 +16,8 @@ public class PostEntity {
 
   @JsonIgnore
   private Long userID;
+  private Long categoryId;
+  private String categoryName;
 
   private String title;
   private String content;

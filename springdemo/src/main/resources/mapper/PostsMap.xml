@@ -1,44 +1,54 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.springdemo.mapper.PostMapper">
 
   <sql id="article_cols">
-    id, title, content, draft_title, draft_content, post_type, created_at, updated_at, draft_updated_at, view_count, status
+    posts.id, posts.title,
+    posts.content,
+    posts.draft_title,
+    posts.draft_content,
+    posts.post_type,
+    posts.created_at, posts.updated_at, posts.draft_updated_at, posts.view_count, posts.status, posts.category_id
   </sql>
   <insert id="createPost" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO posts(user_id, title, content, draft_title, draft_content, post_type) values(
+    INSERT INTO posts(user_id, title, content, draft_title, draft_content, post_type, category_id) values(
       #{post.userID},
       #{post.title},
       #{post.content},
       #{post.title},
       #{post.content},
-      #{post.postType}
+      #{post.postType},
+      #{post.categoryId}
     )
   </insert>
 
   <select id="getDraftArticleById">
-    select <include refid="article_cols" /> from posts where user_id=#{userID} and id=#{articleId}
+    select <include
+      refid="article_cols"
+    />, category.name category_name from posts
+    left join category on posts.category_id = category.id
+    where posts.user_id=#{userID} and posts.id=#{articleId}
   </select>
 
   <update id="updateDraftArticleById">
         UPDATE posts
+        JOIN category c ON c.user_id = #{p.userID}
         SET draft_title = #{p.draftTitle},
           draft_content = #{p.draftContent},
-          draft_updated_at = NOW()
+          draft_updated_at = NOW(),
+          category_id = #{p.categoryId}
         WHERE
-          user_id = #{p.userID} and id = #{p.id}
+          posts.user_id = #{p.userID} and posts.id = #{p.id}
   </update>
 
   <update id="publishArticleById">
     UPDATE posts
     SET
-      title = #{p.title},
-      content = #{p.content},
-      draft_title = #{p.title},
-      draft_content = #{p.content},
+      title = #{p.draftTitle},
+      content = #{p.draftContent},
+      draft_title = #{p.draftTitle},
+      draft_content = #{p.draftContent},
       updated_at = NOW(),
       draft_updated_at = NOW(),
       status = "published"
@@ -53,10 +63,11 @@
       user_id = #{p.userID} and id = #{p.id}
   </update>
 
-  <select id="listPosts" >
-    select <include refid="article_cols" /> from posts
+  <select id="listPosts">
+    select <include refid="article_cols" />, category.name category_name from posts
+    left join category on category.id = posts.category_id and category.user_id = posts.user_id
     WHERE
-      user_id = #{userID}
+      posts.user_id = #{userID}
       <if test="keyword != null and keyword.trim() != ''">
           and (title like concat('%', #{keyword}, '%')
                or draft_title like concat('%', #{keyword}, '%'))
@@ -64,7 +75,7 @@
       order by draft_updated_at desc
   </select>
 
-  <delete id="deletePostById">
+  <delete id="delPostById">
     DELETE FROM posts WHERE user_id = #{userID} and id = #{articleId}
   </delete>
 </mapper>

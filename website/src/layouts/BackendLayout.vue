@@ -19,20 +19,18 @@ const menuRoutes = computed(() =>
     .map((item) => ({ path: item.path, title: String(item.meta?.title) })),
 );
 
-const userInfo = useUserInfo()
+const userInfo = useUserInfo();
 
 onMounted(() => {
-  userInfo.who()
-})
-
+  userInfo.who();
+});
 
 async function logout() {
-  await http("/user/logout")
-  router.push("/welcome/user")
+  await http("/user/logout");
+  router.push("/welcome/user");
 }
 
 const activeIndex = computed(() => route.path);
-
 </script>
 
 <template>
@@ -43,8 +41,14 @@ const activeIndex = computed(() => route.path);
           <div :class="s.brandLogo">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
               <rect width="32" height="32" rx="8" fill="url(#brand-grad)" />
-              <path d="M10 22V10l6 8 6-8v12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
-                stroke-linejoin="round" fill="none" />
+              <path
+                d="M10 22V10l6 8 6-8v12"
+                stroke="#fff"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                fill="none"
+              />
               <defs>
                 <linearGradient id="brand-grad" x1="0" y1="0" x2="32" y2="32">
                   <stop stop-color="#6366f1" />
@@ -61,9 +65,18 @@ const activeIndex = computed(() => route.path);
 
         <div :class="s.menuSection">
           <div :class="s.menuLabel">导航菜单</div>
-          <el-menu :default-active="activeIndex" :router="true" background-color="transparent" text-color="#94a3b8"
-            active-text-color="#ffffff">
-            <el-menu-item v-for="item in menuRoutes" :key="item.path" :index="item.path">
+          <el-menu
+            :default-active="activeIndex"
+            :router="true"
+            background-color="transparent"
+            text-color="#94a3b8"
+            active-text-color="#ffffff"
+          >
+            <el-menu-item
+              v-for="item in menuRoutes"
+              :key="item.path"
+              :index="item.path"
+            >
               <!-- <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path :d="menuIcons[item.title] || 'M12 6v6m0 0v6m0-6h6m-6 0H6'" />
@@ -77,8 +90,12 @@ const activeIndex = computed(() => route.path);
           <div :class="s.userAvatar">
             <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
               <circle cx="18" cy="18" r="18" fill="url(#avatar-grad)" />
-              <path d="M18 16a4 4 0 100-8 4 4 0 000 8zm-8 10c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="#fff"
-                stroke-width="1.8" fill="none" />
+              <path
+                d="M18 16a4 4 0 100-8 4 4 0 000 8zm-8 10c0-4.418 3.582-8 8-8s8 3.582 8 8"
+                stroke="#fff"
+                stroke-width="1.8"
+                fill="none"
+              />
               <defs>
                 <linearGradient id="avatar-grad" x1="0" y1="0" x2="36" y2="36">
                   <stop stop-color="#6366f1" />
@@ -229,7 +246,7 @@ const activeIndex = computed(() => route.path);
   padding: 28px 32px;
   height: 100vh;
 
-  background: #f1f5f9;
+  // background: #f1f5f9;
   overflow-y: auto;
 }
 </style>

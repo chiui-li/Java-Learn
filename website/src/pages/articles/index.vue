@@ -3,7 +3,7 @@ import { onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useArticleStore } from "@/store/useArticleStore";
 import http from "@/request";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 const router = useRouter();
 const keyword = ref("");
@@ -30,18 +30,27 @@ watch(keyword, () => {
 
 onMounted(() => {
   loadArticles();
+  getCategories();
 });
 
 function goEdit(id: number) {
   router.push({ name: "ArticleEdit", params: { id } });
 }
+const categories = ref<string[]>([]);
+async function getCategories() {
+  const b = await http<D.Result<Array<{ name: string }>>>("/category/all");
+  if (b.data) {
+    categories.value = b.data.map((i) => i.name);
+  }
+}
 
-async function goCreate() {
+async function goCreate(categoryName: string) {
   const res = await http.post<D.Result<number>>("/posts/create", {
     data: {
       title: "新建文章",
       content: "来写点什么吧",
       postType: "article",
+      categoryName: categoryName || "前端",
     },
   });
   if (res?.data) {
@@ -91,6 +100,16 @@ function onSizeChange(s: number) {
 }
 
 async function onDel(d: string) {
+  try {
+    await ElMessageBox.confirm("确定要删除这篇文章吗？", "删除确认", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
+  } catch {
+    return;
+  }
+
   const b = await http<D.Result<boolean>>(`/posts/detail/${d}`, {
     method: "DELETE",
   });
@@ -99,6 +118,8 @@ async function onDel(d: string) {
     loadArticles();
   }
 }
+
+const newCategory = ref("");
 </script>
 
 <template>
@@ -114,13 +135,36 @@ async function onDel(d: string) {
           placeholder="搜索标题或内容"
           clearable
           :class="s.searchInput"
-          size="large"
         >
           <template #prefix> </template>
         </el-input>
-        <el-button type="primary" size="large" @click="goCreate">
-          新建文章
-        </el-button>
+        <el-dropdown>
+          <el-button type="primary" link> 新建文章 </el-button>
+          <template #dropdown style="padding: 10px">
+            <div style="padding: 10px">
+              <el-text>分类</el-text>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  @click="(value) => goCreate(value)"
+                  v-for="value in categories"
+                  >{{ value }}</el-dropdown-item
+                >
+              </el-dropdown-menu>
+              <el-input
+                size="small"
+                v-model.trim="newCategory"
+                placeholder="输入新分类"
+              />
+              <el-button
+                link
+                type="primary"
+                @click="goCreate(newCategory)"
+                size="small"
+                >新建</el-button
+              >
+            </div>
+          </template>
+        </el-dropdown>
       </div>
     </div>
 
@@ -142,6 +186,13 @@ async function onDel(d: string) {
               {{ displayTitle(row) }}
             </el-link>
           </template>
+        </el-table-column>
+        <el-table-column
+          prop="categoryName"
+          label="分类"
+          width="100"
+          align="center"
+        >
         </el-table-column>
         <el-table-column label="类型" width="100" align="center">
           <template #default="{ row }">
@@ -281,9 +332,9 @@ async function onDel(d: string) {
 }
 
 .tableCard {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  overflow: hidden;
+  // background: #ffffff;
+  // border: 1px solid #e2e8f0;
+  // overflow: hidden;
 }
 
 .linkTitle {

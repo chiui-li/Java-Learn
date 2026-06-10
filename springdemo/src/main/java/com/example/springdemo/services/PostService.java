@@ -4,31 +4,67 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.example.springdemo.entity.CategoryEntity;
 import com.example.springdemo.entity.PostEntity;
+import com.example.springdemo.mapper.CategoryMapper;
 import com.example.springdemo.mapper.PostMapper;
 import com.example.springdemo.utils.Page;
 import com.github.pagehelper.PageHelper;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class PostService {
 
+  // private final CategoryService categoryService;
   @Autowired
   private PostMapper postMapper;
+  @Autowired
+  private CategoryMapper categoryMapper;
 
+  PostService() {
+    // this.categoryService = categoryService;
+  }
+
+  @Transactional
   public Long createPost(PostEntity p) {
-    postMapper.createPost(p);
-    if (p.getId() != null) {
-      return p.getId();
+    String cName = p.getCategoryName();
+    Long userID = p.getUserID();
+    CategoryEntity c = categoryMapper.selectByName(userID, cName);
+    if (c == null) {
+      CategoryEntity newC = new CategoryEntity();
+      newC.setUserID(userID);
+      newC.setName(cName);
+      categoryMapper.addCategory(newC);
+      p.setCategoryId(newC.getId());
+    } else {
+      p.setCategoryId(c.getId());
     }
-    return null;
+    postMapper.createPost(p);
+    return p.getId();
   }
 
   public PostEntity getDraftArticleById(Long userId, Long articleId) {
     return postMapper.getDraftArticleById(userId, articleId);
   }
 
+  @Transactional
   public int updateDraftArticleById(PostEntity p) {
+    String cName = p.getCategoryName();
+    Long userID = p.getUserID();
+    CategoryEntity c = categoryMapper.selectByName(userID, cName);
+    if (c == null) {
+      CategoryEntity newC = new CategoryEntity();
+      newC.setUserID(userID);
+      newC.setName(cName);
+      categoryMapper.addCategory(newC);
+      p.setCategoryId(newC.getId());
+    } else {
+      p.setCategoryId(c.getId());
+    }
     return postMapper.updateDraftArticleById(p);
   }
 

@@ -7,7 +7,7 @@
 }
 
 html {
-  background: #f1f5f9;
+  /* background: #f1f5f9; */
 }
 
 body,
@@ -23,10 +23,10 @@ body,
 
 #app {
   display: flex;
-  background: #f1f5f9;
+  /* background: #f8fafc; */
 }
 
-button,
+/* button,
 input,
 textarea,
 select {
@@ -35,12 +35,13 @@ select {
 
 a {
   text-decoration: none;
-}
+} */
 
 /* ---- Element Plus Overrides ---- */
 .el-menu {
   border-right: none !important;
 }
+
 
 .el-menu-item {
   margin: 0 !important;
@@ -50,6 +51,7 @@ a {
   line-height: 44px !important;
   font-size: 14px !important;
 }
+/*
 
 .el-menu-item.is-active {
   background: rgba(255, 255, 255, 0.06) !important;
@@ -147,7 +149,7 @@ a {
 
 .el-card {
   border: 1px solid #e2e8f0;
-}
+} */
 
 /* ---- Scrollbar ---- */
 body::-webkit-scrollbar {

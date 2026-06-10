@@ -1,21 +1,13 @@
 <script setup lang="ts">
-import TiptapEditor from "@/components/TiptapEditor.vue";
-import { computed, onUnmounted, ref, watch } from "vue";
+import { onUnmounted, ref, shallowRef, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
-import { useArticleStore } from "@/store/useArticleStore";
 import http from "@/request";
+import QuillEditor from "@/components/QuillEditor.vue";
 
 const route = useRoute();
 const router = useRouter();
-const articleStore = useArticleStore();
 
-const isNew = computed(
-  () =>
-    route.name === "ArticleCreate" ||
-    route.params.id === "new" ||
-    route.path.endsWith("/new"),
-);
 const articleForm = ref<D.Article>({
   id: 0,
   userId: 1000,
@@ -25,11 +17,13 @@ const articleForm = ref<D.Article>({
   updatedAt: "",
   viewCount: 0,
   postType: "article",
-  draftContent: "",
+  // draftContent: [],
   draftTitle: null,
   draftUpdatedAt: "",
   status: "draft",
 });
+
+const draftContent = shallowRef<any>(undefined);
 
 const saving = ref(false);
 const saved = ref(true);
@@ -41,16 +35,21 @@ function clearDraftTimer() {
     draftTimer = null;
   }
 }
+const id = route.params.id;
+
+onUnmounted(() => {
+  clearDraftTimer();
+});
 
 async function flushDraft() {
-  if (isNew.value) return;
-  const id = route.params.id;
-  if (!id || id === "new") return;
   clearDraftTimer();
   saving.value = true;
   try {
     await http.post(`/posts/detail/update/${id}/draft`, {
-      data: articleForm.value,
+      data: {
+        ...articleForm.value,
+        draftContent: JSON.stringify(draftContent.value),
+      },
     });
     saved.value = true;
   } catch {
@@ -61,19 +60,22 @@ async function flushDraft() {
 }
 
 function autoSaveDraft() {
-  if (isNew.value) return;
   saved.value = false;
   clearDraftTimer();
   draftTimer = setTimeout(flushDraft, 2000);
 }
 
 watch(
-  () => articleForm.value.title,
+  () => draftContent.value,
   () => autoSaveDraft(),
+  {
+    deep: false,
+    flush: "sync",
+  },
 );
 
 watch(
-  () => articleForm.value.content,
+  () => articleForm.value.draftTitle,
   () => autoSaveDraft(),
 );
 
@@ -84,7 +86,10 @@ onUnmounted(() => {
 async function loadArticle() {
   const id = route.params.id;
   const res = await http<D.ArticleRes>("/posts/detail/" + id);
-  articleForm.value = { ...res.data };
+  articleForm.value = { ...res.data, draftContent: undefined };
+  draftContent.value = res?.data?.draftContent;
+  // ? JSON.parse(res.data.draftContent)
+  // : [];
   saved.value = true;
 }
 
@@ -112,7 +117,7 @@ async function publishArticle() {
     data: articleForm.value,
   });
   ElMessage.success("已发布文章");
-  await loadArticle()
+  await loadArticle();
 }
 
 async function unpublishArticle() {
@@ -121,9 +126,14 @@ async function unpublishArticle() {
     // data: articleForm.value,
   });
   ElMessage.success("已取消发布文章");
-  await loadArticle()
+  await loadArticle();
 }
 
+async function getCategories() {
+  await http("/category/all");
+}
+
+getCategories();
 </script>
 
 <template>
@@ -132,28 +142,21 @@ async function unpublishArticle() {
       <div>
         <!-- <p :class="s.tag">文章编辑</p> -->
         <h2 :class="s.heading">{{ "编辑文章" }}</h2>
-        <p :class="s.desc">
-          {{
-            isNew
-              ? "填写文章内容并保存草稿或直接发布"
-              : "调整文章信息并保存更新"
-          }}
-        </p>
       </div>
       <div :class="s.headerActions">
-        <span v-if="!isNew" :class="[s.saveIndicator, saving ? s.saving : s.saved]">
-          {{ saving ? "保存中…" : (saved ? "草稿已保存" : "未保存的更改") }}
+        <span :class="[s.saveIndicator, saving ? s.saving : s.saved]">
+          {{ saving ? "保存中…" : saved ? "草稿已保存" : "未保存的更改" }}
         </span>
-        <el-button @click="goBack">
-          返回
-        </el-button>
-        <el-button type="warning" @click="saveAsDraft">
-          保存草稿
-        </el-button>
+        <el-button @click="goBack"> 返回 </el-button>
+        <el-button type="warning" @click="saveAsDraft"> 保存草稿 </el-button>
         <el-button type="primary" @click="publishArticle">
           {{ "发布" }}
         </el-button>
-        <el-button type="primary" v-if="articleForm.status === 'published'" @click="unpublishArticle">
+        <el-button
+          type="primary"
+          v-if="articleForm.status === 'published'"
+          @click="unpublishArticle"
+        >
           {{ "取消发布" }}
         </el-button>
       </div>
@@ -162,11 +165,25 @@ async function unpublishArticle() {
     <div :class="s.formCard">
       <el-form label-width="80px" :model="articleForm" label-position="top">
         <el-form-item label="标题">
-          <el-input v-model="articleForm.draftTitle" placeholder="请输入文章标题" size="large" />
+          <el-input
+            v-model="articleForm.draftTitle"
+            placeholder="请输入文章标题"
+            size="large"
+          />
         </el-form-item>
-
+        <el-form-item disabled label="分类">
+          <el-input
+            disabled
+            v-model="articleForm.categoryName"
+            placeholder="请输入文章标题"
+            size="large"
+          />
+        </el-form-item>
         <el-form-item label="正文">
-          <TiptapEditor v-model="articleForm.draftContent" />
+          <QuillEditor
+            v-if="draftContent !== undefined"
+            v-model="draftContent"
+          />
         </el-form-item>
       </el-form>
     </div>
@@ -220,11 +237,11 @@ async function unpublishArticle() {
 }
 
 .formCard {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 28px;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
-  border: 1px solid #e2e8f0;
+  // background: #ffffff;
+  // border-radius: 16px;
+  // padding: 28px;
+  // box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  // border: 1px solid #e2e8f0;
 }
 
 .formRow {
@@ -256,7 +273,7 @@ async function unpublishArticle() {
   background: #ecfdf5;
 }
 
-.saveIndicator:empty+.saveIndicator {
+.saveIndicator:empty + .saveIndicator {
   display: none;
 }
 </style>
