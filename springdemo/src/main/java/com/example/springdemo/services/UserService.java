@@ -22,6 +22,10 @@ public class UserService {
     return uMapper.findUserById(id);
   }
 
+  public User findUserByUsername(String username) {
+    return uMapper.findUserByUsername(username);
+  }
+
   public List<User> selectAllUsers() {
     return uMapper.selectUserList();
   }

@@ -25,6 +25,5 @@ public interface UserMapper {
   public List<User> findUserByEmail(
       @Param("email") String email, @Param("username") String username);
 
-  // public List<User> findUserByName(
-  // @Param("name") String name);
+  public User findUserByUsername(@Param("username") String username);
 }

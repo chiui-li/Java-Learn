@@ -7,4 +7,5 @@ public class CategoryEntity {
   private Long id;
   private String name;
   private Long userID;
+  private int postCount;
 }

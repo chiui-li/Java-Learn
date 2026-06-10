@@ -20,6 +20,19 @@ public class User {
    */
   private String username;
 
+  private String avatar;
+  private String bio;
+
+  /**
+   * GitHub 主页
+   */
+  private String github;
+
+  /**
+   * 个人网站
+   */
+  private String website;
+
   /**
    * 密码(加密后)
    */

@@ -9,6 +9,7 @@
     posts.draft_title,
     posts.draft_content,
     posts.post_type,
+    posts.content_html,
     posts.created_at, posts.updated_at, posts.draft_updated_at, posts.view_count, posts.status, posts.category_id
   </sql>
   <insert id="createPost" useGeneratedKeys="true" keyProperty="id">
@@ -33,11 +34,9 @@
 
   <update id="updateDraftArticleById">
         UPDATE posts
-        JOIN category c ON c.user_id = #{p.userID}
         SET draft_title = #{p.draftTitle},
           draft_content = #{p.draftContent},
-          draft_updated_at = NOW(),
-          category_id = #{p.categoryId}
+          draft_updated_at = NOW()
         WHERE
           posts.user_id = #{p.userID} and posts.id = #{p.id}
   </update>
@@ -49,6 +48,7 @@
       content = #{p.draftContent},
       draft_title = #{p.draftTitle},
       draft_content = #{p.draftContent},
+      content_html = #{p.contentHtml},
       updated_at = NOW(),
       draft_updated_at = NOW(),
       status = "published"
@@ -78,4 +78,26 @@
   <delete id="delPostById">
     DELETE FROM posts WHERE user_id = #{userID} and id = #{articleId}
   </delete>
-</mapper>
+
+  <!-- listPublishedPosts -->
+
+  <select id="listPublishedPosts">
+    SELECT id, title, view_count, content, content_html, created_at, updated_at  FROM posts WHERE user_id = #{userID}
+    <if test="categoryId != null">
+    AND category_id = #{categoryId}
+    </if>
+    AND status = 'published' ORDER BY updated_at DESC
+  </select>
+
+  <select id="getPublishedPostById">
+    SELECT posts.id, posts.title, posts.content_html, posts.view_count, posts.created_at, posts.updated_at,
+           posts.user_id, posts.category_id,
+           category.name category_name
+    FROM posts
+    LEFT JOIN category ON posts.category_id = category.id
+    WHERE posts.id = #{postId} AND posts.status = 'published'
+  </select>
+
+  <update id="incrementViewCount">
+    UPDATE posts SET view_count = view_count + 1 WHERE id = #{postId}
+  </update></mapper>

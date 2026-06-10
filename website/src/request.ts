@@ -5,6 +5,13 @@ import { ElMessage } from "element-plus";
 const ins = axios.create({
   baseURL: "http://localhost:8080",
   withCredentials: true,
+  // transformRequest: [
+  //   (data, headers) => {
+  //     console.log("data", data);
+  //     headers["Content-Type"] = "application/json";
+  //     return JSON.stringify(data);
+  //   },
+  // ],
 });
 
 ins.interceptors.request.use((req) => {
@@ -28,7 +35,7 @@ ins.interceptors.response.use(
     if (error.response.status === 401) {
       ElMessage({ message: "请登录" });
       router.replace("/welcome/user");
-      return
+      return;
     }
     if (error.response) {
       ElMessage({ message: error.response });

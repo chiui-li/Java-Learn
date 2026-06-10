@@ -23,4 +23,8 @@ public class CategoryService {
     return cMapper.selectAll(userID);
   }
 
+  public List<CategoryEntity> selectAllPublished(Long userID) {
+    return cMapper.selectAllPublished(userID);
+  }
+
 }

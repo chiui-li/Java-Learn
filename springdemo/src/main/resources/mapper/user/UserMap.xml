@@ -5,7 +5,7 @@
 
 <mapper namespace="com.example.springdemo.mapper.UserMapper">
     <sql id="user_columns">
-        id, username, email, created_at, updated_at, password_updated_at
+        id, username, email, created_at, updated_at, password_updated_at, avatar, bio, github, website
     </sql>
     <select id="selectUserList" resultType="User">
         select <include refid="user_columns" /> from users
@@ -32,6 +32,9 @@
         select <include refid="user_columns" /> from users where id=#{id}
     </select>
 
+    <select id="findUserByUsername">
+        select <include refid="user_columns" /> from users where username=#{username}
+    </select>
 
     <select id="findUserByEmail">
         select <include refid="user_columns" /> from users where email=#{email} or username=#{username}

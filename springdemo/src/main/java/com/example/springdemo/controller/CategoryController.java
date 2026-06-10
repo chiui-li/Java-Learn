@@ -3,7 +3,6 @@ package com.example.springdemo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -36,4 +35,5 @@ public class CategoryController {
   public Result<List<CategoryEntity>> postMethodName(@RequestAttribute Long userID) {
     return Result.success(categoryService.selectAll(userID), null);
   }
+
 }

@@ -10,16 +10,9 @@ const router = useRouter();
 
 const articleForm = ref<D.Article>({
   id: 0,
-  userId: 1000,
-  title: "",
-  content: "",
   createdAt: "",
   updatedAt: "",
-  viewCount: 0,
-  postType: "article",
-  // draftContent: [],
   draftTitle: null,
-  draftUpdatedAt: "",
   status: "draft",
 });
 
@@ -47,7 +40,10 @@ async function flushDraft() {
   try {
     await http.post(`/posts/detail/update/${id}/draft`, {
       data: {
-        ...articleForm.value,
+        // ...articleForm.value,
+        // categoryName: articleForm.value.categoryName,
+        id,
+        draftTitle: articleForm.value.draftTitle,
         draftContent:
           typeof draftContent.value === "string"
             ? draftContent.value
@@ -82,6 +78,8 @@ watch(
   () => autoSaveDraft(),
 );
 
+const editor = ref<InstanceType<typeof QuillEditor>>();
+
 onUnmounted(() => {
   flushDraft();
 });
@@ -115,11 +113,19 @@ async function saveAsDraft() {
 }
 
 async function publishArticle() {
-  const id = route.params.id;
+  const html = editor.value?.getHtml();
   await http.post(`/posts/detail/publish/${id}`, {
-    data: articleForm.value,
+    data: {
+      id,
+      draftTitle: articleForm.value.draftTitle,
+      draftContent:
+        typeof draftContent.value === "string"
+          ? draftContent.value
+          : JSON.stringify(draftContent.value),
+      contentHtml: html,
+    },
   });
-  ElMessage.success("已发布文章");
+  ElMessage.success("1111已发布文章");
   await loadArticle();
 }
 
@@ -184,6 +190,7 @@ getCategories();
         </el-form-item>
         <el-form-item label="正文">
           <QuillEditor
+            ref="editor"
             v-if="draftContent !== undefined"
             v-model="draftContent"
           />

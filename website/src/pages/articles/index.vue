@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, shallowRef, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useArticleStore } from "@/store/useArticleStore";
 import http from "@/request";
@@ -29,14 +29,15 @@ watch(keyword, () => {
 });
 
 onMounted(() => {
-  loadArticles();
   getCategories();
+  loadArticles();
 });
 
 function goEdit(id: number) {
   router.push({ name: "ArticleEdit", params: { id } });
 }
-const categories = ref<string[]>([]);
+const categories = shallowRef<string[]>([]);
+
 async function getCategories() {
   const b = await http<D.Result<Array<{ name: string }>>>("/category/all");
   if (b.data) {
@@ -145,7 +146,7 @@ const newCategory = ref("");
               <el-text>分类</el-text>
               <el-dropdown-menu>
                 <el-dropdown-item
-                  @click="(value) => goCreate(value)"
+                  @click="() => goCreate(value)"
                   v-for="value in categories"
                   >{{ value }}</el-dropdown-item
                 >

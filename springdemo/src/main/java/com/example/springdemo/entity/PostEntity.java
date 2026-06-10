@@ -18,6 +18,7 @@ public class PostEntity {
   private Long userID;
   private Long categoryId;
   private String categoryName;
+  private String contentHtml;
 
   private String title;
   private String content;
@@ -26,7 +27,8 @@ public class PostEntity {
   private String postType;
   private String status;
   private Long viewCount;
-
+  private String description;
+  private String coverUrl;
   /**
    * 创建时间
    */

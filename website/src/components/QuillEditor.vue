@@ -7,7 +7,7 @@ import ImageBlot from "@/components/quill/ImageBlot";
 import ImageResize from "@/components/quill/ImageResize";
 
 // 放行 blob: URL（getFileUrl 对接 OSS 后返回 http/https，届时自动走默认校验）
-const VideoFormat = Quill.import("formats/video");
+const VideoFormat = Quill.import("formats/video") as any;
 const videoSanitize = VideoFormat.sanitize;
 VideoFormat.sanitize = (url: string) => {
   if (url.startsWith("blob:")) return url;
@@ -72,6 +72,12 @@ function createUploadHandler(embedType: "image" | "video") {
     input.click();
   };
 }
+
+defineExpose({
+  getHtml: () => {
+    return quill?.getSemanticHTML() || "";
+  },
+});
 
 onMounted(() => {
   if (editorContainer.value) {

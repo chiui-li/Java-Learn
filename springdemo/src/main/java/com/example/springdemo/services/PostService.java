@@ -53,18 +53,18 @@ public class PostService {
 
   @Transactional
   public int updateDraftArticleById(PostEntity p) {
-    String cName = p.getCategoryName();
-    Long userID = p.getUserID();
-    CategoryEntity c = categoryMapper.selectByName(userID, cName);
-    if (c == null) {
-      CategoryEntity newC = new CategoryEntity();
-      newC.setUserID(userID);
-      newC.setName(cName);
-      categoryMapper.addCategory(newC);
-      p.setCategoryId(newC.getId());
-    } else {
-      p.setCategoryId(c.getId());
-    }
+    // String cName = p.getCategoryName();
+    // Long userID = p.getUserID();
+    // CategoryEntity c = categoryMapper.selectByName(userID, cName);
+    // if (c == null) {
+    // CategoryEntity newC = new CategoryEntity();
+    // newC.setUserID(userID);
+    // newC.setName(cName);
+    // categoryMapper.addCategory(newC);
+    // p.setCategoryId(newC.getId());
+    // } else {
+    // p.setCategoryId(c.getId());
+    // }
     return postMapper.updateDraftArticleById(p);
   }
 
@@ -88,5 +88,27 @@ public class PostService {
       return true;
     }
     return false;
+  }
+
+  // public List<PostEntity> listPublishedPosts(String userName) {
+  // return postMapper.listPublishedPosts(userName);
+  // }
+
+  public List<PostEntity> listPublishedPosts(Long userID, Long CategoryId) {
+    return postMapper.listPublishedPosts(userID, CategoryId);
+  }
+
+  public Page<PostEntity> listPublishedPostsPage(Long userID, Long categoryId, int pageNum, int pageSize) {
+    PageHelper.startPage(pageNum, pageSize);
+    List<PostEntity> list = postMapper.listPublishedPosts(userID, categoryId);
+    return new Page<>(list);
+  }
+
+  public PostEntity getPublishedPostById(Long postId) {
+    return postMapper.getPublishedPostById(postId);
+  }
+
+  public void incrementViewCount(Long postId) {
+    postMapper.incrementViewCount(postId);
   }
 }
