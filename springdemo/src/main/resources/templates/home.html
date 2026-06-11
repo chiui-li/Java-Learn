@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>博客导航 - 所有用户博客</title>
-    <meta name="description" content="浏览所有用户博客，发现精彩内容">
+    <title>博客首页 - 所有博客</title>
+    <meta name="description" content="浏览所有博客，发现精彩内容, 个人blog, 编程技术，计算机编程，生活记录">
     <link rel="stylesheet" th:href="@{/css/index.css}">
+    <script>
+      window.onload = function() {
+        location.href = "/blog/chiuli/index.html";
+      };
+    </script>
 </head>
 <body>
 
 <!-- Header -->
 <header class="header">
     <div class="header-inner">
-        <a class="logo" href="/">博客导航</a>
+        <a class="logo" href="/">链接</a>
     </div>
 </header>
 
@@ -21,7 +26,7 @@
     <div class="home-container">
 
         <h1 class="home-title">所有博客</h1>
-        <p class="home-subtitle">浏览以下用户的博客站点</p>
+        <p class="home-subtitle">浏览以下的博客站点</p>
 
         <div class="user-grid" th:if="${users != null and !users.isEmpty()}">
             <a class="user-card"
@@ -52,7 +57,7 @@
 <footer class="footer">
     <div class="footer-inner">
         <span class="copyright">
-            &copy; <span th:text="${#temporals.year(#temporals.createNow())}">2026</span> 博客导航. All rights reserved.
+            &copy; <span th:text="${#temporals.year(#temporals.createNow())}">2026</span> 个人编程技术学习. All rights reserved.
         </span>
         <div class="footer-powered">
             <span class="dot"></span>
