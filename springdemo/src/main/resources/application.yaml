@@ -3,20 +3,20 @@
 spring:
   # application: springdemo
   datasource:
-    url: jdbc:mysql://${HOST:192.168.91.95}:3306/website
+    url: jdbc:mysql://${HOST}:3306/website
     username: ${DB_USERNAME:root}
     password: ${DB_PS:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
-      host: ${HOST:192.168.91.95}
+      host: ${HOST}
       port: 6379
-      password: ${PS_COMMON:password}
-  rabbitmq:
-    host: ${HOST:192.168.91.95}
-    port: 5672
-    username: ${MQ:root}
-    password: ${PS_COMMON:password}
+      password: ${PS_COMMON}
+  # rabbitmq:
+  #   host: ${HOST}
+  #   port: 5672
+  #   username: ${MQ:root}
+  #   password: ${PS_COMMON}
   mvc:
     log-request-details: true
   session:
