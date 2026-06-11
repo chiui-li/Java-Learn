@@ -3,9 +3,13 @@ import Quill, { Delta } from "quill";
 import { onMounted, ref } from "vue";
 import "quill/dist/quill.snow.css";
 import { getFileUrl } from "@/utils/upload";
-import ImageBlot from "@/components/quill/ImageBlot";
+// import ImageBlot from "@/components/quill/ImageBlot";
 import ImageResize from "@/components/quill/ImageResize";
 import http from "@/request";
+import ImageUploader from "quill-image-uploader";
+import "quill-image-uploader/dist/quill.imageUploader.min.css";
+
+Quill.register("modules/imageUploader", ImageUploader);
 
 // 放行 blob: URL（getFileUrl 对接 OSS 后返回 http/https，届时自动走默认校验）
 const VideoFormat = Quill.import("formats/video") as any;
@@ -15,7 +19,7 @@ VideoFormat.sanitize = (url: string) => {
   return videoSanitize(url);
 };
 
-Quill.register("formats/image", ImageBlot);
+// Quill.register("formats/image", ImageBlot);
 Quill.register("modules/ImageResize", ImageResize);
 
 const toolbarOptions = [
@@ -59,9 +63,6 @@ function createUploadHandler(embedType: "image" | "video") {
     input.addEventListener("change", async () => {
       const file = input.files?.[0];
       if (!file) return;
-      // const { data: token } = await http<D.Result<{ token: string }>>(
-      //   "/user/upload/getToken",
-      // );
       try {
         // 核心上传步骤，对接真实 OSS 后替换 getFileUrl 实现
         const url = await getFileUrl(file);
@@ -88,6 +89,11 @@ onMounted(() => {
     quill = new Quill(editorContainer.value, {
       theme: "snow",
       modules: {
+        imageUploader: {
+          upload: (file: File) => {
+            return getFileUrl(file);
+          },
+        },
         toolbar: {
           container: toolbarOptions,
           handlers: {
@@ -98,6 +104,7 @@ onMounted(() => {
         ImageResize: true,
       },
     });
+
     try {
       quill.setContents(
         typeof props.modelValue === "string"

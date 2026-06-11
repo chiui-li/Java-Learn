@@ -97,7 +97,9 @@ public class UserController {
 
   @GetMapping("/upload/getToken")
   public Result<String> getMethodName() {
-    Auth auth = Auth.create("gKdxxqpgeliEQMp0wo4RJwPz8bBHS9cOpTWia2ei", "fsalBEoe68C-XGkdE7Ys27qJ7WvBS1FsLoyBJ8pZ");
+    String accessKey = System.getenv("QINIU_ACCESS_KEY");
+    String secretKey = System.getenv("QINIU_SECRET_KEY");
+    Auth auth = Auth.create(accessKey, secretKey);
     return Result.success(auth.uploadToken("chiuili-blog"), null);
   }
 

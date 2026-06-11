@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, shallowRef } from "vue";
 import { useRouter } from "vue-router";
 import { useArticleStore } from "@/store/useArticleStore";
+import http from "@/request";
 
 const router = useRouter();
 const articleStore = useArticleStore();
@@ -25,12 +26,35 @@ const recentArticles = computed(() =>
     .slice(0, 5),
 );
 
-function goArticles() {
-  router.push("/backend/articles");
+const categories = shallowRef<string[]>([]);
+
+async function getCategories() {
+  const b = await http<D.Result<Array<{ name: string }>>>("/category/all");
+  if (b.data) {
+    categories.value = b.data.map((i) => i.name);
+  }
 }
 
-function goCreate() {
-  router.push("/backend/articles/new");
+getCategories();
+
+const newCategory = ref("");
+
+function goArticles() {
+  router.push("/back/backend/articles");
+}
+
+async function goCreate(categoryName: string) {
+  const res = await http.post<D.Result<number>>("/posts/create", {
+    data: {
+      title: "新建文章",
+      content: "来写点什么吧",
+      postType: "article",
+      categoryName: categoryName || "前端",
+    },
+  });
+  if (res?.data) {
+    router.push({ name: "ArticleEdit", params: { id: res.data } });
+  }
 }
 </script>
 
@@ -43,21 +67,66 @@ function goCreate() {
       </div>
       <div :class="s.headerActions">
         <el-button @click="goArticles">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="margin-right: 4px"
+          >
             <path
-              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+            />
           </svg>
           全部文章
         </el-button>
-        <el-button type="primary" @click="goCreate">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          新建文章
-        </el-button>
+        <el-dropdown>
+          <el-button type="primary">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="margin-right: 4px"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            新建文章
+          </el-button>
+          <template #dropdown style="padding: 10px">
+            <div style="padding: 10px">
+              <el-text>分类</el-text>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  @click="() => goCreate(value)"
+                  v-for="value in categories"
+                  >{{ value }}</el-dropdown-item
+                >
+              </el-dropdown-menu>
+              <el-input
+                size="small"
+                v-model.trim="newCategory"
+                placeholder="输入新分类"
+              />
+              <el-button
+                link
+                type="primary"
+                @click="goCreate(newCategory)"
+                size="small"
+                >新建</el-button
+              >
+            </div>
+          </template>
+        </el-dropdown>
       </div>
     </div>
 
@@ -65,10 +134,19 @@ function goCreate() {
     <div :class="s.statsGrid">
       <div :class="[s.statCard, { [s.cardBlue]: true }]">
         <div :class="s.statIcon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-            stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path
-              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+            />
           </svg>
         </div>
         <div :class="s.statBody">
@@ -79,8 +157,16 @@ function goCreate() {
       </div>
       <div :class="[s.statCard, { [s.cardGreen]: true }]">
         <div :class="s.statIcon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-            stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
@@ -91,8 +177,16 @@ function goCreate() {
       </div>
       <div :class="[s.statCard, { [s.cardAmber]: true }]">
         <div :class="s.statIcon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-            stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
             <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
           </svg>
@@ -104,8 +198,16 @@ function goCreate() {
       </div>
       <div :class="[s.statCard, { [s.cardPurple]: true }]">
         <div :class="s.statIcon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-            stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
             <circle cx="12" cy="12" r="3" />
           </svg>
@@ -125,8 +227,16 @@ function goCreate() {
       </div>
       <div :class="s.recentCard">
         <div v-if="recentArticles.length === 0" :class="s.empty">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5"
-            stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#cbd5e1"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
             <polyline points="14 2 14 8 20 8" />
             <line x1="16" y1="13" x2="8" y2="13" />
@@ -134,29 +244,47 @@ function goCreate() {
           </svg>
           <p>暂无文章，快去创建第一篇吧</p>
         </div>
-        <div v-for="article in recentArticles" :key="article.id" :class="s.articleRow"
-          @click="router.push(`/backend/articles/${article.id}/edit`)">
+        <div
+          v-for="article in recentArticles"
+          :key="article.id"
+          :class="s.articleRow"
+          @click="router.push(`/backend/articles/${article.id}/edit`)"
+        >
           <div :class="s.articleInfo">
             <div :class="s.articleTitle">{{ article.title }}</div>
             <div :class="s.articleMeta">
               <span :class="s.articleDate">{{ article.createdAt }}</span>
-              <span :class="[
-                s.statusDot,
-                {
-                  [s.published]: article.status === 'published',
-                  [s.draft]: article.status === 'draft',
-                },
-              ]" />
-              <span :class="article.status === 'published' ? s.publishedText : s.draftText
-                ">
+              <span
+                :class="[
+                  s.statusDot,
+                  {
+                    [s.published]: article.status === 'published',
+                    [s.draft]: article.status === 'draft',
+                  },
+                ]"
+              />
+              <span
+                :class="
+                  article.status === 'published' ? s.publishedText : s.draftText
+                "
+              >
                 {{ article.status === "published" ? "已发布" : "草稿" }}
               </span>
               <span v-if="article.viewCount !== undefined">
-                · {{ article.viewCount }} 次浏览</span>
+                · {{ article.viewCount }} 次浏览</span
+              >
             </div>
           </div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#94a3b8"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </div>
@@ -167,9 +295,17 @@ function goCreate() {
     <div :class="s.section">
       <h3 :class="s.sectionTitle">快速操作</h3>
       <div :class="s.quickGrid">
-        <div :class="s.quickCard" @click="goCreate">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
+        <div :class="s.quickCard" @click="goArticles">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#6366f1"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>

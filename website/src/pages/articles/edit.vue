@@ -104,7 +104,7 @@ watch(
 
 function goBack() {
   clearDraftTimer();
-  router.push("/backend/articles");
+  router.push("/back/backend/articles");
 }
 
 async function saveAsDraft() {
@@ -125,7 +125,7 @@ async function publishArticle() {
       contentHtml: html,
     },
   });
-  ElMessage.success("1111已发布文章");
+  ElMessage.success("已发布");
   await loadArticle();
 }
 
@@ -134,7 +134,7 @@ async function unpublishArticle() {
   await http.post(`/posts/detail/unpublish/${id}`, {
     // data: articleForm.value,
   });
-  ElMessage.success("已取消发布文章");
+  ElMessage.success("已取消发布");
   await loadArticle();
 }
 

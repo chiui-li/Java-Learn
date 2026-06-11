@@ -3,15 +3,8 @@ import router from "./router";
 import { ElMessage } from "element-plus";
 
 const ins = axios.create({
-  baseURL: "http://localhost:8080",
-  withCredentials: true,
-  // transformRequest: [
-  //   (data, headers) => {
-  //     console.log("data", data);
-  //     headers["Content-Type"] = "application/json";
-  //     return JSON.stringify(data);
-  //   },
-  // ],
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
+  withCredentials: !import.meta.env.VITE_API_BASE_URL,
 });
 
 ins.interceptors.request.use((req) => {
@@ -22,7 +15,7 @@ ins.interceptors.response.use(
   (res: AxiosResponse<any>) => {
     console.log("res ---->", res);
     if (res.status === 401) {
-      router.replace("/welcome/user");
+      router.replace("/back/welcome/user");
       return res.data;
     }
     if (res?.data?.errMsg) {
@@ -34,7 +27,7 @@ ins.interceptors.response.use(
   (error) => {
     if (error.response.status === 401) {
       ElMessage({ message: "请登录" });
-      router.replace("/welcome/user");
+      router.replace("/back/welcome/user");
       return;
     }
     if (error.response) {

@@ -11,7 +11,7 @@ spring:
     redis:
       host: ${HOST:localhost}
       port: 6379
-      password: ${REDIS_PS:password}
+      # password: "${REDIS_PS:password}"
   # rabbitmq:
   #   host: ${HOST:localhost}
   #   port: 5672

@@ -5,16 +5,16 @@ import WelcomLayout from "./layouts/WelcomLayout.vue";
 import BackendLayout from "./layouts/BackendLayout.vue";
 
 export default [
-  { path: '/', redirect: { path: '/backend/dashborad' } },
+  { path: "/back", redirect: { path: "/back/backend/dashborad" } },
   {
-    path: "/welcome",
+    path: "/back/welcome",
     component: WelcomLayout,
     children: [{ path: "user", component: Login }],
   },
   {
-    path: "/backend",
+    path: "/back/backend",
     component: BackendLayout,
-    name: 'backend',
+    name: "backend",
     children: [
       {
         path: "dashborad",

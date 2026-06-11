@@ -3,13 +3,13 @@
 spring:
   # application: springdemo
   datasource:
-    url: jdbc:mysql://${HOST:localhost}:3306/website
+    url: jdbc:mysql://${HOST:192.168.91.95}:3306/website
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PS:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
-      host: ${HOST:localhost}
+      host: ${HOST:192.168.91.95}
       port: 6379
       password: ${REDIS_PS:password}
   # rabbitmq:

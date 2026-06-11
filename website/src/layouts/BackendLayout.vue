@@ -12,7 +12,7 @@ const menuRoutes = computed(() =>
     .getRoutes()
     .filter(
       (item) =>
-        item.path.startsWith("/backend/") &&
+        item.path.startsWith("/back/backend/") &&
         item.meta?.title &&
         !item.path.includes(":"),
     )
@@ -27,10 +27,18 @@ onMounted(() => {
 
 async function logout() {
   await http("/user/logout");
-  router.push("/welcome/user");
+  router.push("/back/welcome/user");
 }
 
-const activeIndex = computed(() => route.path);
+const activeIndex = computed(() => {
+  // For sub-pages like /back/backend/articles/new, highlight the parent menu item
+  const matched = [...menuRoutes.value]
+    .sort((a, b) => b.path.length - a.path.length)
+    .find(
+      (m) => route.path === m.path || route.path.startsWith(m.path + "/"),
+    );
+  return matched?.path ?? route.path;
+});
 </script>
 
 <template>

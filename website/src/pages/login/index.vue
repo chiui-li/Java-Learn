@@ -11,7 +11,6 @@ const form = reactive<D.User>({
   email: "",
 });
 
-
 const router = useRouter();
 const options = reactive([
   { label: "登录", value: "0" },
@@ -26,12 +25,8 @@ const rules = {
     { required: true, message: "请输入用户名" },
     { min: 2, max: 100, message: "用户名长度 2 - 100" },
   ],
-  email: [
-    { required: true, message: "请输入邮箱", trigger: "blur" },
-  ],
-  password: [
-    { required: true, message: "请输入密码", trigger: "blur" },
-  ],
+  email: [{ required: true, message: "请输入邮箱", trigger: "blur" }],
+  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
 };
 
 const formRef = ref<FormInstance>();
@@ -51,7 +46,7 @@ const onLogin = async () => {
         message: "欢迎回来",
         type: "success",
       });
-      router.push("/backend/dashborad");
+      router.push("/back/backend/dashborad");
     }
   } finally {
     loading.value = false;
@@ -92,8 +87,14 @@ const onRegister = async () => {
         <div :class="s.logoWrap">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
             <rect width="40" height="40" rx="10" fill="url(#lgrad)" />
-            <path d="M13 28V12l7 10 7-10v16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
-              stroke-linejoin="round" fill="none" />
+            <path
+              d="M13 28V12l7 10 7-10v16"
+              stroke="#fff"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"
+            />
             <defs>
               <linearGradient id="lgrad" x1="0" y1="0" x2="40" y2="40">
                 <stop stop-color="#6366f1" />
@@ -106,14 +107,38 @@ const onRegister = async () => {
         <p :class="s.desc">文章管理后台</p>
       </div>
 
-      <el-segmented v-model="type" :options="options" size="large" :class="s.segmented" />
+      <el-segmented
+        v-model="type"
+        :options="options"
+        size="large"
+        :class="s.segmented"
+      />
 
-      <el-form ref="formRef" :rules="rules" :model="form" label-width="0" :class="s.form">
+      <el-form
+        ref="formRef"
+        :rules="rules"
+        :model="form"
+        label-width="0"
+        :class="s.form"
+      >
         <el-form-item prop="username">
-          <el-input v-model="form.username" placeholder="用户名" :prefix-icon="false" size="large">
+          <el-input
+            v-model="form.username"
+            placeholder="用户名"
+            :prefix-icon="false"
+            size="large"
+          >
             <template #prefix>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8"
-                stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#94a3b8"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
@@ -124,9 +149,19 @@ const onRegister = async () => {
         <el-form-item v-if="type === '1'" prop="email">
           <el-input v-model="form.email" placeholder="邮箱" size="large">
             <template #prefix>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#94a3b8"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                />
                 <polyline points="22,6 12,13 2,6" />
               </svg>
             </template>
@@ -134,10 +169,23 @@ const onRegister = async () => {
         </el-form-item>
 
         <el-form-item prop="password">
-          <el-input v-model="form.password" placeholder="密码" type="password" size="large">
+          <el-input
+            v-model="form.password"
+            placeholder="密码"
+            type="password"
+            size="large"
+          >
             <template #prefix>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8"
-                stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#94a3b8"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                 <path d="M7 11V7a5 5 0 0110 0v4" />
               </svg>
@@ -146,12 +194,24 @@ const onRegister = async () => {
         </el-form-item>
 
         <el-form-item>
-          <el-button v-if="type === '0'" type="primary" size="large" :loading="loading" :class="s.submitBtn"
-            @click="onLogin">
+          <el-button
+            v-if="type === '0'"
+            type="primary"
+            size="large"
+            :loading="loading"
+            :class="s.submitBtn"
+            @click="onLogin"
+          >
             登录
           </el-button>
-          <el-button v-if="type === '1'" type="primary" size="large" :loading="loading" :class="s.submitBtn"
-            @click="onRegister">
+          <el-button
+            v-if="type === '1'"
+            type="primary"
+            size="large"
+            :loading="loading"
+            :class="s.submitBtn"
+            @click="onRegister"
+          >
             注册
           </el-button>
         </el-form-item>
@@ -178,7 +238,11 @@ const onRegister = async () => {
   left: -200px;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(99, 102, 241, 0.15) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   pointer-events: none;
 }
@@ -189,7 +253,11 @@ const onRegister = async () => {
   right: -200px;
   width: 700px;
   height: 700px;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(139, 92, 246, 0.1) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   pointer-events: none;
 }

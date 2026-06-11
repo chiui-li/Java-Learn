@@ -24,7 +24,7 @@ const uploadUrl = "https://upload.qiniup.com"; // 按需修改
 
 const domain = "http://tggdle3bb.hd-bkt.clouddn.com"; // 后端返回的 CDN 域名
 
-let cachedToken: { token: string; domain: string } | null = null;
+// let cachedToken: { token: string; domain: string } | null = null;
 
 /**
  * 获取上传 token（带简单缓存，减少重复请求）
