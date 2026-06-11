@@ -1,0 +1,52 @@
+# spring.application.name=springdemo
+# spring.application.name=springdemo
+spring:
+  # application: springdemo
+  datasource:
+    url: jdbc:mysql://${HOST}:3306/website
+    username: ${DB_USERNAME:root}
+    password: ${DB_PS:password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: ${HOST}
+      port: 6379
+      password: ${PS_COMMON}
+  # rabbitmq:
+  #   host: ${HOST}
+  #   port: 5672
+  #   username: ${MQ:root}
+  #   password: ${PS_COMMON}
+  mvc:
+    log-request-details: true
+  session:
+    timeout: 7200
+
+  # servlet:
+  # session:
+  #   cookie:
+  #     same-site: none
+mybatis:
+  mapper-locations:
+    - classpath:mapper/**/*.xml
+  type-aliases-package: com.example.springdemo.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    # 将DispatcherServlet的日志级别设为DEBUG
+    "[org.springframework.web.servlet.DispatcherServlet]": DEBUG
+  file:
+    name: logs/springdemo.log
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB # 单个文件最大大小
+      max-history: 10 # 保留天数
+      total-size-cap: 20GB # 总大小上限
+      clean-history-on-start: false # 启动时是否清理历史日志
+pagehelper:
+  helper-dialect: mysql # 指定数据库类型
+  reasonable: true # 分页合理化，当pageNum<1时默认查第一页
+  support-methods-arguments: true # 支持通过Mapper接口参数传递分页参数

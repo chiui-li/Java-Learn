@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Blog</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-inner">
+        <a class="logo" th:href="@{/blog/{userName}/index.html(userName=${userName})}" th:text="${userName != null ? userName : 'Blog'}">Blog</a>
+        <nav class="nav-links">
+            <a class="nav-link active" th:href="@{/blog/{userName}/index.html(userName=${userName})}">首页</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="layout-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Profile Card -->
+            <section class="profile" th:if="${profile != null}">
+                <div class="profile-card">
+                    <div class="profile-avatar" th:if="${profile.avatar != null}">
+                        <img th:src="${profile.avatar}" alt="avatar">
+                    </div>
+                    <div class="profile-avatar" th:unless="${profile.avatar != null}"></div>
+                    <div class="profile-info">
+                        <h2 th:text="${profile.username != null ? profile.username : userName}">用户名</h2>
+                        <p class="profile-bio" th:if="${profile.bio != null}" th:text="${profile.bio}">个人简介</p>
+                        <div class="profile-extra">
+                            <span class="profile-email" th:if="${profile.email != null}">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                <span th:text="${profile.email}">email@example.com</span>
+                            </span>
+                            <a class="profile-social" th:if="${profile.github != null}"
+                               th:href="${profile.github}" target="_blank" rel="noopener noreferrer" title="GitHub">
+                                <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                            </a>
+                            <a class="profile-social" th:if="${profile.website != null}"
+                               th:href="${profile.website}" target="_blank" rel="noopener noreferrer" title="Website">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="content-area">
+
+            <!-- Categories -->
+            <section class="categories-wrap" th:if="${categories != null and !categories.isEmpty()}">
+                <ul class="categories">
+                    <li><a th:classappend="${activeCategoryId == null} ? 'active'" th:href="@{/blog/{userName}/index.html(userName=${userName})}">全部</a></li>
+                    <li th:each="cat : ${categories}">
+                        <a th:href="'/blog/' + ${userName} + '/index.html?categoryId=' + ${cat.id} + '&categoryName=' + ${cat.name}"
+                           th:text="${cat.name} + ' (' + ${cat.postCount} + ')'"
+                           th:classappend="${activeCategoryId == cat.id} ? 'active'">分类</a>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Post List -->
+            <section class="posts" th:if="${posts != null}">
+                <article class="post-card"
+                         th:each="post : ${posts}"
+                         th:data-url="@{/blog/{userName}/post/{postId}/{postTitle}.html(userName=${userName}, postId=${post.id}, postTitle=${post.title})}"
+                         onclick="window.location.href=this.dataset.url">
+                    <h3 class="post-title" th:text="${post.title}">文章标题</h3>
+                    <div class="post-meta">
+                        <span class="category" th:if="${post.categoryName != null}"
+                              th:text="${post.categoryName}"
+                              th:classappend="${activeCategoryId != null and post.categoryId == activeCategoryId} ? 'highlight'">分类</span>
+                        <span class="views" th:text="${post.viewCount} + ' views'">0 views</span>
+                        <span th:if="${post.updatedAt != null}"
+                              th:text="${#temporals.format(post.updatedAt, 'yyyy-MM-dd')}">2025-01-01</span>
+                    </div>
+                    <div class="post-excerpt" th:utext="${post.contentHtml}">内容预览</div>
+                </article>
+
+                <div class="empty" th:if="${#lists.isEmpty(posts)}">
+                    暂无文章
+                </div>
+            </section>
+
+            <!-- Pagination -->
+            <nav class="pagination" th:if="${page != null and page.pages > 1}">
+                <a class="page-btn page-prev"
+                   th:classappend="${!page.hasPreviousPage} ? 'disabled'"
+                   th:href="@{/blog/{userName}/index.html(userName=${userName}, pageNum=${page.pageNum - 1}, categoryId=${activeCategoryId}, categoryName=${activeCategoryName})}"
+                   th:disabled="${!page.hasPreviousPage}">上一页</a>
+                <div class="page-info">
+                    <span class="page-current" th:text="${page.pageNum}">1</span>
+                    <span class="page-sep">/</span>
+                    <span class="page-total" th:text="${page.pages}">10</span>
+                </div>
+
+                <a class="page-btn page-next"
+                   th:classappend="${!page.hasNextPage} ? 'disabled'"
+                   th:href="@{/blog/{userName}/index.html(userName=${userName}, pageNum=${page.pageNum + 1}, categoryId=${activeCategoryId}, categoryName=${activeCategoryName})}"
+                   th:disabled="${!page.hasNextPage}">下一页</a>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-inner">
+        <span class="copyright">
+            &copy; <span th:text="${#temporals.year(#temporals.createNow())}">2025</span>
+            <span th:text="${userName != null ? userName : 'Blog'}">Blog</span>. All rights reserved.
+        </span>
+        <ul class="footer-links">
+            <li><a th:href="@{/blog/{userName}/index.html(userName=${userName})}">首页</a></li>
+        </ul>
+        <div class="footer-powered">
+            <span class="dot"></span>
+            Powered by Spring Boot
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

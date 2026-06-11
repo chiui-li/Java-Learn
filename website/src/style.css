@@ -1,0 +1,174 @@
+* {
+  box-sizing: border-box;
+}
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* background: #f1f5f9; */
+}
+
+body,
+#app {
+  height: 100%;
+  min-height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  color: #0f172a;
+}
+
+#app {
+  display: flex;
+  /* background: #f8fafc; */
+}
+
+/* button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  text-decoration: none;
+} */
+
+/* ---- Element Plus Overrides ---- */
+.el-menu {
+  border-right: none !important;
+}
+
+
+.el-menu-item {
+  margin: 0 !important;
+  width: 100% !important;
+  border-radius: 0 !important;
+  height: 44px !important;
+  line-height: 44px !important;
+  font-size: 14px !important;
+}
+/*
+
+.el-menu-item.is-active {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  position: relative;
+}
+
+.el-menu-item.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  background: #6366f1;
+  border-radius: 0 2px 2px 0;
+}
+
+.el-menu-item:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.el-menu-item .menu-icon {
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.el-input__wrapper {
+  border-radius: 10px !important;
+  box-shadow: 0 0 0 1px #e2e8f0 inset !important;
+}
+
+.el-input__wrapper.is-focus {
+  box-shadow: 0 0 0 2px #6366f1 inset !important;
+}
+
+.el-textarea__inner {
+  border-radius: 10px !important;
+  box-shadow: 0 0 0 1px #e2e8f0 inset !important;
+}
+
+.el-table {
+  --el-table-border-color: #e2e8f0;
+}
+
+.el-table th {
+  color: #475569;
+  font-weight: 600;
+}
+
+.el-table th.el-table__cell {
+  background-color: #f8fafc !important;
+}
+
+.el-card,
+.el-form {
+  border-radius: 16px;
+}
+
+.el-button--primary {
+  --el-button-bg-color: #6366f1;
+  --el-button-border-color: #6366f1;
+  --el-button-hover-bg-color: #4f46e5;
+  --el-button-hover-border-color: #4f46e5;
+  --el-button-active-bg-color: #4338ca;
+  --el-button-active-border-color: #4338ca;
+}
+
+.el-button--primary:hover {
+  background-color: #4f46e5;
+  border-color: #4f46e5;
+}
+
+.el-button--warning {
+  --el-button-bg-color: #f59e0b;
+  --el-button-border-color: #f59e0b;
+  --el-button-hover-bg-color: #d97706;
+  --el-button-hover-border-color: #d97706;
+}
+
+.el-button--warning:hover {
+  background-color: #d97706;
+  border-color: #d97706;
+}
+
+.el-button {
+  border-radius: 999px;
+  transition: all 0.2s ease;
+}
+
+.el-tag {
+  border-radius: 999px;
+}
+
+.el-card {
+  border: 1px solid #e2e8f0;
+} */
+
+/* ---- Scrollbar ---- */
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.25);
+  border-radius: 999px;
+}
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---- Fade Transition ---- */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}

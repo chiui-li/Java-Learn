@@ -1,0 +1,12 @@
+target/
+logs/
+*.log
+*.gz
+.git/
+.gitignore
+.idea/
+*.iml
+.vscode/
+mvnw
+mvnw.cmd
+HELP.md

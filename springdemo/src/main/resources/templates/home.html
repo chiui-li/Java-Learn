@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客导航 - 所有用户博客</title>
+    <meta name="description" content="浏览所有用户博客，发现精彩内容">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-inner">
+        <a class="logo" href="/">博客导航</a>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="home-container">
+
+        <h1 class="home-title">所有博客</h1>
+        <p class="home-subtitle">浏览以下用户的博客站点</p>
+
+        <div class="user-grid" th:if="${users != null and !users.isEmpty()}">
+            <a class="user-card"
+               th:each="user : ${users}"
+               th:href="@{/blog/{userName}/index.html(userName=${user.username})}"
+               th:title="'访问 ' + ${user.username} + ' 的博客'">
+                <div class="user-avatar" th:if="${user.avatar != null}">
+                    <img th:src="${user.avatar}" alt="">
+                </div>
+                <div class="user-avatar user-avatar-empty" th:unless="${user.avatar != null}">
+                    <span th:text="${#strings.substring(user.username, 0, 1)}">U</span>
+                </div>
+                <div class="user-info">
+                    <h2 class="user-name" th:text="${user.username}">用户名</h2>
+                    <p class="user-bio" th:if="${user.bio != null}" th:text="${user.bio}">个人简介</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="empty" th:if="${users == null or users.isEmpty()}">
+            暂无用户
+        </div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-inner">
+        <span class="copyright">
+            &copy; <span th:text="${#temporals.year(#temporals.createNow())}">2026</span> 博客导航. All rights reserved.
+        </span>
+        <div class="footer-powered">
+            <span class="dot"></span>
+            Powered by Spring Boot
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
