@@ -1,5 +1,6 @@
 package com.example.springdemo.controller.user;
 
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -16,10 +17,12 @@ import com.example.springdemo.constants.Constants;
 import com.example.springdemo.entity.User;
 import com.example.springdemo.services.UserService;
 import com.example.springdemo.utils.Result;
+import com.qiniu.util.Auth;
 
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/user")
@@ -91,4 +94,11 @@ public class UserController {
 
     return Result.success(true, null);
   }
+
+  @GetMapping("/upload/getToken")
+  public Result<String> getMethodName() {
+    Auth auth = Auth.create("gKdxxqpgeliEQMp0wo4RJwPz8bBHS9cOpTWia2ei", "fsalBEoe68C-XGkdE7Ys27qJ7WvBS1FsLoyBJ8pZ");
+    return Result.success(auth.uploadToken("chiuili-blog"), null);
+  }
+
 }

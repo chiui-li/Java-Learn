@@ -3,6 +3,7 @@ import { useRouter } from "vue-router";
 import { post } from "@/request";
 import { reactive, ref } from "vue";
 import { ElNotification, type FormInstance } from "element-plus";
+import { hashPassword } from "@/utils/crypto";
 
 const form = reactive<D.User>({
   username: "",
@@ -39,8 +40,9 @@ const onLogin = async () => {
   await formRef.value?.validate();
   loading.value = true;
   try {
+    const payload = { ...form, password: await hashPassword(form.password) };
     const res = await post<D.UserRes>("/user/login", {
-      data: form,
+      data: payload,
       method: "post",
     });
     if (res?.data?.email) {
@@ -60,8 +62,9 @@ const onRegister = async () => {
   await formRef.value?.validate();
   loading.value = true;
   try {
+    const payload = { ...form, password: await hashPassword(form.password) };
     const res = await post<D.UserRes>("/user/register", {
-      data: form,
+      data: payload,
       method: "post",
     });
     if (res.data) {

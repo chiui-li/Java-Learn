@@ -5,6 +5,7 @@ import "quill/dist/quill.snow.css";
 import { getFileUrl } from "@/utils/upload";
 import ImageBlot from "@/components/quill/ImageBlot";
 import ImageResize from "@/components/quill/ImageResize";
+import http from "@/request";
 
 // 放行 blob: URL（getFileUrl 对接 OSS 后返回 http/https，届时自动走默认校验）
 const VideoFormat = Quill.import("formats/video") as any;
@@ -58,6 +59,9 @@ function createUploadHandler(embedType: "image" | "video") {
     input.addEventListener("change", async () => {
       const file = input.files?.[0];
       if (!file) return;
+      // const { data: token } = await http<D.Result<{ token: string }>>(
+      //   "/user/upload/getToken",
+      // );
       try {
         // 核心上传步骤，对接真实 OSS 后替换 getFileUrl 实现
         const url = await getFileUrl(file);
