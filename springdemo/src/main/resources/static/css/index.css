@@ -931,10 +931,7 @@ template {
 .detail-header {
   background: #fff;
   padding: 32px 32px 28px;
-  /* border-bottom: 1px solid #e8e8e8; */
-  /* box-shadow: 0 1px 4px rgba(0, 0, 0, .06); */
-  /* margin-bottom: 20px; */
-  /* animation: fadeUp .45s ease both; */
+  padding-bottom: 14px;
 }
 
 .detail-title {
@@ -976,10 +973,10 @@ template {
   background: #fff;
   border-radius: 14px;
   padding: 32px;
-  font-size: 1rem;
-  line-height: 1.8;
+  /* font-size: 1rem; */
+  /* line-height: 1.8; */
   color: #333;
-  word-break: break-word;
+  /* word-break: break-word; */
   /* animation: fadeUp .45s ease .1s both; */
   border-top-left-radius: 0;
   border-top-right-radius: 0;
@@ -1120,6 +1117,7 @@ template {
 
   .detail-header {
     padding: 24px 20px;
+
   }
 
   .detail-title {

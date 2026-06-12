@@ -7,9 +7,18 @@
     <meta name="description" th:content="${post.description != null ? post.description : post.title}" />
     <meta name="author" th:content="${profile.username != null ? profile.username : userName}" />
     <link rel="stylesheet" th:href="@{/css/index.css}" />
-    <link rel="stylesheet" href="/getFile/highlight.min.css">
-    <script src="/getFile/highlight.min.js"></script>
-
+    <!-- <link rel="stylesheet" href="/getFile/highlight.min.css"> -->
+    <link rel="stylesheet" href="/getFile/quill.snow.css">
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <style>
+      #myEditor {
+        border: none  !important;
+      }
+      .ql-editor {
+        padding: 0;
+      }
+    </style>
+    <!-- <script src="/getFile/highlight.min.js"></script> -->
   </head>
   <body>
     <!-- Header -->
@@ -151,7 +160,7 @@
                 >
               </div>
             </header>
-            <div class="detail-content" th:utext="${post.contentHtml}">
+            <div id="myEditor" class="detail-content  ql-snow" th:utext="${post.contentHtml}">
               文章内容
             </div>
           </article>
@@ -181,13 +190,17 @@
       </div>
     </footer>
   </body>
-  <script>
+  <script th:inline="javascript">
 
-  document.querySelectorAll(
-    '[data-language]'
-    )
-  .forEach(el => {
-    hljs.highlightElement(el)
+
+
+  const quill = new Quill('#myEditor', {
+    theme: 'snow',
+            readOnly: true,
+        modules: {
+            toolbar: false
+        }
+
   });
 
 
