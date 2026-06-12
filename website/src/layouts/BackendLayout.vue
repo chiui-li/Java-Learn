@@ -96,7 +96,13 @@ const activeIndex = computed(() => {
 
         <div :class="s.userSection">
           <div :class="s.userAvatar">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <img
+              v-if="userInfo?.user?.avatar"
+              :src="userInfo.user.avatar"
+              :class="s.avatarImg"
+              alt="avatar"
+            />
+            <svg v-else width="36" height="36" viewBox="0 0 36 36" fill="none">
               <circle cx="18" cy="18" r="18" fill="url(#avatar-grad)" />
               <path
                 d="M18 16a4 4 0 100-8 4 4 0 000 8zm-8 10c0-4.418 3.582-8 8-8s8 3.582 8 8"
@@ -113,10 +119,15 @@ const activeIndex = computed(() => {
             </svg>
           </div>
           <div :class="s.userInfo">
-            <div :class="s.userName">用户</div>
+            <div :class="s.userName">{{ userInfo?.user?.username || "用户" }}</div>
             <div :class="s.userRole">{{ userInfo?.user?.email }}</div>
           </div>
-          <div :class="s.logout" @click="logout">注销</div>
+          <div :class="s.logout" @click.stop="logout">注销</div>
+          <div :class="s.linkBtn" @click.stop="router.push('/back/backend/profile')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+          </div>
           <div :class="s.userStatus" />
         </div>
       </div>
@@ -139,6 +150,22 @@ const activeIndex = computed(() => {
   cursor: pointer;
   color: #fff;
   font-size: small;
+}
+
+.linkBtn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+  flex-shrink: 0;
+}
+
+.linkBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .sidebar {
@@ -218,6 +245,13 @@ const activeIndex = computed(() => {
 
 .userAvatar {
   flex-shrink: 0;
+}
+
+.avatarImg {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .userInfo {

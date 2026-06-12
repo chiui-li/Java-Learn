@@ -30,6 +30,10 @@ public class UserService {
     return uMapper.selectUserList();
   }
 
+  public Boolean updateUser(User u) {
+    return uMapper.updateUser(u) > 0;
+  }
+
   public String registerUser(User u) {
     List<User> users = uMapper.findUserByEmail(u.getEmail(), u.getUsername());
     if (users.isEmpty()) {

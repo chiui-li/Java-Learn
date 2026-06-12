@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import http from "@/request";
 import QuillEditor from "@/components/QuillEditor.vue";
+import { isEqual } from "lodash-es";
 
 const route = useRoute();
 const router = useRouter();
@@ -61,21 +62,31 @@ async function flushDraft() {
 function autoSaveDraft() {
   saved.value = false;
   clearDraftTimer();
-  draftTimer = setTimeout(flushDraft, 2000);
+  draftTimer = setTimeout(flushDraft, 5000);
 }
 
 watch(
   () => draftContent.value,
-  () => autoSaveDraft(),
+  (n, o) => {
+    if (typeof o === "string" || !o) {
+    } else {
+      autoSaveDraft();
+    }
+  },
   {
     deep: false,
-    flush: "sync",
+    flush: "post",
   },
 );
 
 watch(
   () => articleForm.value.draftTitle,
-  () => autoSaveDraft(),
+  (n, o) => {
+    if (!o) {
+    } else {
+      autoSaveDraft();
+    }
+  },
 );
 
 const editor = ref<InstanceType<typeof QuillEditor>>();
@@ -88,9 +99,10 @@ async function loadArticle() {
   const id = route.params.id;
   const res = await http<D.ArticleRes>("/posts/detail/" + id);
   articleForm.value = { ...res.data, draftContent: undefined };
-  draftContent.value = res?.data?.draftContent;
-  // ? JSON.parse(res.data.draftContent)
-  // : [];
+  draftContent.value =
+    typeof res?.data?.draftContent === "string"
+      ? JSON.parse(res.data.draftContent)
+      : [];
   saved.value = true;
 }
 
@@ -126,7 +138,7 @@ async function publishArticle() {
     },
   });
   ElMessage.success("已发布");
-  await loadArticle();
+  // await loadArticle();
 }
 
 async function unpublishArticle() {
@@ -135,7 +147,7 @@ async function unpublishArticle() {
     // data: articleForm.value,
   });
   ElMessage.success("已取消发布");
-  await loadArticle();
+  // await loadArticle();
 }
 
 async function getCategories() {

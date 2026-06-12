@@ -7,9 +7,9 @@
     <meta name="description" content="浏览所有博客，发现精彩内容, 个人blog, 编程技术，计算机编程，生活记录">
     <link rel="stylesheet" th:href="@{/css/index.css}">
     <script>
-      window.onload = function() {
-        location.href = "/blog/chiuili/index.html";
-      };
+      // window.onload = function() {
+      //   location.href = "/blog/chiuili/index.html";
+      // };
     </script>
 </head>
 <body>
@@ -26,12 +26,12 @@
     <div class="home-container">
 
         <h1 class="home-title">所有博客</h1>
-        <p class="home-subtitle">浏览以下的博客站点</p>
+        <p class="home-subtitle">浏览以下我的博客站点</p>
 
         <div class="user-grid" th:if="${users != null and !users.isEmpty()}">
             <a class="user-card"
                th:each="user : ${users}"
-               th:href="@{/blog/{userName}/index.html(userName=${user.username})}"
+               th:href="@{/blog/{userName}(userName=${user.username})}"
                th:title="'访问 ' + ${user.username} + ' 的博客'">
                 <div class="user-avatar" th:if="${user.avatar != null}">
                     <img th:src="${user.avatar}" alt="">

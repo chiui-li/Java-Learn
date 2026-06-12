@@ -7,6 +7,10 @@ spring:
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PS:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 500MB # 单个文件最大
+      max-request-size: 500MB # 整个请求最大（多个文件）
   data:
     redis:
       host: ${HOST:localhost}

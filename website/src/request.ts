@@ -3,8 +3,8 @@ import router from "./router";
 import { ElMessage } from "element-plus";
 
 const ins = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
-  withCredentials: !import.meta.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  withCredentials: import.meta.env.DEV,
 });
 
 ins.interceptors.request.use((req) => {

@@ -11,9 +11,9 @@
 <!-- Header -->
 <header class="header">
     <div class="header-inner">
-        <a class="logo" th:href="@{/blog/{userName}/index.html(userName=${userName})}" th:text="${userName != null ? userName : 'Blog'}">Blog</a>
+        <a class="logo" th:href="@{/blog/{userName}(userName=${userName})}" th:text="${userName != null ? userName : 'Blog'}">Blog</a>
         <nav class="nav-links">
-            <a class="nav-link active" th:href="@{/blog/{userName}/index.html(userName=${userName})}">首页</a>
+            <a class="nav-link active" th:href="@{/blog/{userName}(userName=${userName})}">首页</a>
         </nav>
     </div>
 </header>
@@ -59,9 +59,9 @@
             <!-- Categories -->
             <section class="categories-wrap" th:if="${categories != null and !categories.isEmpty()}">
                 <ul class="categories">
-                    <li><a th:classappend="${activeCategoryId == null} ? 'active'" th:href="@{/blog/{userName}/index.html(userName=${userName})}">全部</a></li>
+                    <li><a th:classappend="${activeCategoryId == null} ? 'active'" th:href="@{/blog/{userName}(userName=${userName})}">全部</a></li>
                     <li th:each="cat : ${categories}">
-                        <a th:href="'/blog/' + ${userName} + '/index.html?categoryId=' + ${cat.id} + '&categoryName=' + ${cat.name}"
+                        <a th:href="'/blog/' + ${userName} + '?categoryId=' + ${cat.id} + '&categoryName=' + ${cat.name}"
                            th:text="${cat.name} + ' (' + ${cat.postCount} + ')'"
                            th:classappend="${activeCategoryId == cat.id} ? 'active'">分类</a>
                     </li>
@@ -95,7 +95,7 @@
             <nav class="pagination" th:if="${page != null and page.pages > 1}">
                 <a class="page-btn page-prev"
                    th:classappend="${!page.hasPreviousPage} ? 'disabled'"
-                   th:href="@{/blog/{userName}/index.html(userName=${userName}, pageNum=${page.pageNum - 1}, categoryId=${activeCategoryId}, categoryName=${activeCategoryName})}"
+                   th:href="@{/blog/{userName}(userName=${userName}, pageNum=${page.pageNum - 1}, categoryId=${activeCategoryId}, categoryName=${activeCategoryName})}"
                    th:disabled="${!page.hasPreviousPage}">上一页</a>
                 <div class="page-info">
                     <span class="page-current" th:text="${page.pageNum}">1</span>
@@ -105,7 +105,7 @@
 
                 <a class="page-btn page-next"
                    th:classappend="${!page.hasNextPage} ? 'disabled'"
-                   th:href="@{/blog/{userName}/index.html(userName=${userName}, pageNum=${page.pageNum + 1}, categoryId=${activeCategoryId}, categoryName=${activeCategoryName})}"
+                   th:href="@{/blog/{userName}(userName=${userName}, pageNum=${page.pageNum + 1}, categoryId=${activeCategoryId}, categoryName=${activeCategoryName})}"
                    th:disabled="${!page.hasNextPage}">下一页</a>
             </nav>
         </div>
@@ -117,10 +117,10 @@
     <div class="footer-inner">
         <span class="copyright">
             &copy; <span th:text="${#temporals.year(#temporals.createNow())}">2025</span>
-            <span th:text="${userName != null ? userName : 'Blog'}">Blog</span>. All rights reserved.
+            <span th:text="${userName != null ? userName : 'Blog'}">个人编程技术学习</span>. All rights reserved.
         </span>
         <ul class="footer-links">
-            <li><a th:href="@{/blog/{userName}/index.html(userName=${userName})}">首页</a></li>
+            <li><a th:href="@{/blog/{userName}(userName=${userName})}">首页</a></li>
         </ul>
         <div class="footer-powered">
             <span class="dot"></span>

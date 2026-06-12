@@ -9,6 +9,12 @@ declare namespace D {
     username?: string;
     email?: string;
     password?: string;
+    avatar?: string;
+    bio?: string;
+    github?: string;
+    website?: string;
+    createdAt?: string;
+    updatedAt?: string;
   }
 
   type UserRes = Result<User>;

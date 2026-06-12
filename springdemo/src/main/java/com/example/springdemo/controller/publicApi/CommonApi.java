@@ -1,5 +1,9 @@
 package com.example.springdemo.controller.publicApi;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Locale.Category;
 
@@ -19,6 +23,9 @@ import com.example.springdemo.services.CategoryService;
 import com.example.springdemo.services.PostService;
 import com.example.springdemo.services.UserService;
 import com.example.springdemo.utils.Page;
+import com.example.springdemo.utils.Result;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class CommonApi {
@@ -34,7 +41,7 @@ public class CommonApi {
   @Autowired
   public CategoryService categoryService;
 
-  @GetMapping("/blog/{userName}/index.html")
+  @GetMapping("/blog/{userName}")
   public String index(@PathVariable String userName, Model model,
       @RequestParam(value = "categoryId", required = false) Long categoryId,
       @RequestParam(value = "categoryName", required = false) String categoryName,
@@ -95,4 +102,25 @@ public class CommonApi {
     model.addAttribute("users", users);
     return "home";
   }
+
+  @GetMapping("/getFile/{fileName}")
+  public void getMethodName(@PathVariable String fileName, HttpServletResponse response) throws IOException {
+    File file = new File("uploadFile" + "/" + fileName);
+    response.setContentType("image/jpeg");
+    String mimeType = Files.probeContentType(file.toPath());
+    if (mimeType == null) {
+      mimeType = "application/octet-stream";
+    }
+    response.setContentType(mimeType);
+    response.setHeader("Content-Disposition",
+        "attachment; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
+    response.setHeader(fileName, mimeType);
+    response.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    try {
+      Files.copy(file.toPath(), response.getOutputStream());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
 }

@@ -8,19 +8,16 @@ import ImageResize from "@/components/quill/ImageResize";
 import http from "@/request";
 import ImageUploader from "quill-image-uploader";
 import "quill-image-uploader/dist/quill.imageUploader.min.css";
+import ImageBlot from "./quill/ImageBlot";
+import VideoBlot from "./quill/VideoBlot";
+import VideoResize from "./quill/VideoResize";
 
-Quill.register("modules/imageUploader", ImageUploader);
+// Quill.register("modules/imageUploader", ImageUploader);
 
-// 放行 blob: URL（getFileUrl 对接 OSS 后返回 http/https，届时自动走默认校验）
-const VideoFormat = Quill.import("formats/video") as any;
-const videoSanitize = VideoFormat.sanitize;
-VideoFormat.sanitize = (url: string) => {
-  if (url.startsWith("blob:")) return url;
-  return videoSanitize(url);
-};
-
-// Quill.register("formats/image", ImageBlot);
+Quill.register("formats/image", ImageBlot);
+Quill.register("formats/video", VideoBlot);
 Quill.register("modules/ImageResize", ImageResize);
+Quill.register("modules/VideoResize", VideoResize);
 
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"],
@@ -67,9 +64,10 @@ function createUploadHandler(embedType: "image" | "video") {
         // 核心上传步骤，对接真实 OSS 后替换 getFileUrl 实现
         const url = await getFileUrl(file);
         const range = quill!.getSelection(true);
-        const embedValue = embedType === "image" ? { url } : url;
+        const embedValue =
+          embedType === "image" || embedType === "video" ? { url } : url;
         quill!.insertEmbed(range.index, embedType, embedValue, "user");
-        // quill!.setSelection(range.index + 1);
+        // quill!.setSelection(+1);
       } catch (e) {
         console.error(`[QuillEditor] ${embedType} upload failed:`, e);
       }
@@ -89,11 +87,11 @@ onMounted(() => {
     quill = new Quill(editorContainer.value, {
       theme: "snow",
       modules: {
-        imageUploader: {
-          upload: (file: File) => {
-            return getFileUrl(file);
-          },
-        },
+        // imageUploader: {
+        //   upload: (file: File) => {
+        //     return getFileUrl(file);
+        //   },
+        // },
         toolbar: {
           container: toolbarOptions,
           handlers: {
@@ -102,6 +100,7 @@ onMounted(() => {
           },
         },
         ImageResize: true,
+        VideoResize: true,
       },
     });
 
@@ -139,6 +138,15 @@ onMounted(() => {
   :global {
     * {
       line-height: normal;
+    }
+    video {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
     }
   }
 }

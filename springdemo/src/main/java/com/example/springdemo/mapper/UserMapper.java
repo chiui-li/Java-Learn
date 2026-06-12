@@ -26,4 +26,6 @@ public interface UserMapper {
       @Param("email") String email, @Param("username") String username);
 
   public User findUserByUsername(@Param("username") String username);
+
+  public int updateUser(@Param("p") User user);
 }

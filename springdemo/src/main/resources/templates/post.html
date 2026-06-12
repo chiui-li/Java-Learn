@@ -14,14 +14,14 @@
       <div class="header-inner">
         <a
           class="logo"
-          th:href="@{/blog/{userName}/index.html(userName=${userName})}"
+          th:href="@{/blog/{userName}(userName=${userName})}"
           th:text="${userName}"
           >Blog</a
         >
         <nav class="nav-links">
           <a
             class="nav-link"
-            th:href="@{/blog/{userName}/index.html(userName=${userName})}"
+            th:href="@{/blog/{userName}(userName=${userName})}"
             >首页</a
           >
         </nav>
@@ -36,7 +36,7 @@
           <!-- Profile Card -->
           <section class="profile" th:if="${profile != null}">
             <div class="profile-card">
-              <a th:href="@{/blog/{userName}/index.html(userName=${userName})}">
+              <a th:href="@{/blog/{userName}(userName=${userName})}">
                 <div class="profile-avatar" th:if="${profile.avatar != null}">
                   <img th:src="${profile.avatar}" alt="avatar" />
                 </div>
@@ -46,7 +46,7 @@
                 th:unless="${profile.avatar != null}"
               ></div>
               <div class="profile-info">
-                <a th:href="@{/blog/{userName}/index.html(userName=${userName})}">
+                <a th:href="@{/blog/{userName}(userName=${userName})}">
                   <h2
                     th:text="${profile.username != null ? profile.username : userName}"
                   >
@@ -166,7 +166,7 @@
         </span>
         <ul class="footer-links">
           <li>
-            <a th:href="@{/blog/{userName}/index.html(userName=${userName})}"
+            <a th:href="@{/blog/{userName}(userName=${userName})}"
               >首页</a
             >
           </li>

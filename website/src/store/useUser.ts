@@ -1,34 +1,35 @@
-import http from "@/request"
-import { defineStore } from "pinia"
-import { ref } from "vue"
+import http from "@/request";
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
-export interface User {
-  username: string
-  email: string
-}
-
-// 注意解构会导致失去响应
-export const useUserInfo = defineStore('search-filters', () => {
-  const user = ref<User>({
+export const useUserInfo = defineStore("user-info", () => {
+  const user = ref<D.User>({
     username: "",
-    email: ""
-  })
+    email: "",
+    avatar: "",
+    bio: "",
+    github: "",
+    website: "",
+    createdAt: "",
+    updatedAt: "",
+  });
 
   async function who() {
-    const res = await http<D.Result<User>>("/user/who")
-    user.value = res.data!
-    console.log("res", user.value);
+    const res = await http<D.Result<D.User>>("/user/who");
+    if (res.data) {
+      user.value = res.data;
+    }
   }
 
+  async function updateProfile(data: Partial<D.User>) {
+    const res = await http.post<D.Result<D.User>>("/user/update", { data });
+    await who();
+    return res;
+  }
 
   return {
     user,
-    setUser() {
-      user.value = {
-        email: "1",
-        username: "2",
-      }
-    },
     who,
-  }
-})
+    updateProfile,
+  };
+});

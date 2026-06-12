@@ -1,6 +1,5 @@
 import Login from "@/pages/login/index.vue";
 import Index from "@/pages/dashborad/index.vue";
-// import Users from "./pages/users/index.vue";
 import WelcomLayout from "./layouts/WelcomLayout.vue";
 import BackendLayout from "./layouts/BackendLayout.vue";
 
@@ -21,6 +20,13 @@ export default [
         component: Index,
         meta: {
           title: "仪表盘",
+        },
+      },
+      {
+        path: "profile",
+        component: () => import("./pages/users/profile.vue"),
+        meta: {
+          title: "个人设置",
         },
       },
       {

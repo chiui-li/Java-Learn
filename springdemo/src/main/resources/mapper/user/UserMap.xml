@@ -40,4 +40,17 @@
         select <include refid="user_columns" /> from users where email=#{email} or username=#{username}
     </select>
 
+    <!-- updateUser -->
+
+    <update id="updateUser">
+
+        update users set
+          username = #{p.username},
+          email = #{p.email},
+          bio = #{p.bio},
+          github = #{p.github},
+          website = #{p.website},
+          avatar = #{p.avatar}
+        where id = #{p.id}
+    </update>
 </mapper>

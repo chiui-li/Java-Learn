@@ -39,30 +39,41 @@ async function getUploadToken(): Promise<string> {
   return res?.data;
 }
 
-/**
- * 获取七牛 OSS 访问 URL
- *
- * @param file - 待上传的文件
- * @returns CDN 可访问的完整 URL
- */
-export async function getFileUrl(file: File): Promise<string> {
-  const token = await getUploadToken();
+// /**
+//  * 获取七牛 OSS 访问 URL
+//  *
+//  * @param file - 待上传的文件
+//  * @returns CDN 可访问的完整 URL
+//  */
+// export async function getFileUrl(file: File): Promise<string> {
+//   const token = await getUploadToken();
 
-  const form = new FormData();
-  form.append("token", token);
-  form.append("file", file);
+//   const form = new FormData();
+//   form.append("token", token);
+//   form.append("file", file);
 
-  const resp = await fetch(uploadUrl, {
-    method: "POST",
-    body: form,
+//   const resp = await fetch(uploadUrl, {
+//     method: "POST",
+//     body: form,
+//   });
+
+//   if (!resp.ok) {
+//     throw new Error(`七牛上传失败 (${resp.status}): ${await resp.text()}`);
+//   }
+
+//   const result: { hash: string; key: string } = await resp.json();
+//   return `${domain}/${result.key}`;
+// }
+
+export async function getFileUrl(file: File): Promise<String> {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("ext", "." + file.name.split(".").at(-1));
+  const b = await http.post<D.Result<String>>("/user/upload", {
+    data: formData,
   });
 
-  if (!resp.ok) {
-    throw new Error(`七牛上传失败 (${resp.status}): ${await resp.text()}`);
-  }
-
-  const result: { hash: string; key: string } = await resp.json();
-  return `${domain}/${result.key}`;
+  return `${import.meta.env.VITE_API_BASE_URL}/getFile/${b.data!}`;
 }
 
 /**

@@ -32,6 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
             "/favicon.ico",
             "/*.html",
             "/*.js",
+            "/getFile/**",
             "/css/**",
             "/*.*"); // 排除登录/注册等接口
   }

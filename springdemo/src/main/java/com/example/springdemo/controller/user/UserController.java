@@ -1,5 +1,6 @@
 package com.example.springdemo.controller.user;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.springdemo.constants.Constants;
 import com.example.springdemo.entity.User;
@@ -101,6 +103,25 @@ public class UserController {
     String secretKey = System.getenv("QINIU_SECRET_KEY");
     Auth auth = Auth.create(accessKey, secretKey);
     return Result.success(auth.uploadToken("chiuili-blog"), null);
+  }
+
+  @PostMapping("/upload")
+  public Result<String> upload(@RequestParam("file") MultipartFile file, @RequestParam("ext") String ext)
+      throws Exception {
+    // 设置上传至项目文件夹下的uploadFile文件夹中，没有文件夹则创建
+    File dir = new File("uploadFile");
+    if (!dir.exists()) {
+      dir.mkdirs();
+    }
+    String uuid = UUID.randomUUID().toString();
+    file.transferTo(new File(dir.getAbsolutePath() + File.separator + uuid + ext));
+    return Result.success(uuid + ext, null);
+  }
+
+  @PostMapping("/update")
+  public Result<Boolean> postMethodName(@RequestBody User u, @RequestAttribute("userID") Long userID) {
+    u.setId(userID);
+    return Result.success(uService.updateUser(u), null);
   }
 
 }
