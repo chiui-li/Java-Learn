@@ -19,25 +19,10 @@
  */
 
 import http from "@/request";
-
+import imageCompression from "browser-image-compression";
 const uploadUrl = "https://upload.qiniup.com"; // 按需修改
 
 const domain = "http://tggdle3bb.hd-bkt.clouddn.com"; // 后端返回的 CDN 域名
-
-// let cachedToken: { token: string; domain: string } | null = null;
-
-/**
- * 获取上传 token（带简单缓存，减少重复请求）
- */
-async function getUploadToken(): Promise<string> {
-  // if (cachedToken) return cachedToken;
-  const res = await http<D.Result<string>>("/user/upload/getToken");
-  if (!res?.data) {
-    throw new Error("获取七牛上传凭证失败");
-  }
-  // cachedToken = res.data;
-  return res?.data;
-}
 
 // /**
 //  * 获取七牛 OSS 访问 URL
@@ -65,20 +50,32 @@ async function getUploadToken(): Promise<string> {
 //   return `${domain}/${result.key}`;
 // }
 
-export async function getFileUrl(file: File): Promise<String> {
+async function compressImageIfNeeded(file: File): Promise<File> {
+  if (!file.type.startsWith("image/")) {
+    return file;
+  }
+
+  try {
+    return await imageCompression(file, {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+      fileType: file.type,
+    });
+  } catch (error) {
+    console.warn("图片压缩失败，使用原文件上传", error);
+    return file;
+  }
+}
+
+export async function getFileUrl(file: File): Promise<string> {
+  const compressedFile = await compressImageIfNeeded(file);
   const formData = new FormData();
-  formData.append("file", file);
-  formData.append("ext", "." + file.name.split(".").at(-1));
-  const b = await http.post<D.Result<String>>("/user/upload", {
+  formData.append("file", compressedFile);
+  formData.append("ext", "." + compressedFile.name.split(".").at(-1));
+  const b = await http.post<D.Result<string>>("/user/upload", {
     data: formData,
   });
 
   return `${import.meta.env.VITE_API_BASE_URL}/getFile/${b.data!}`;
-}
-
-/**
- * 清除缓存的 token（用于 token 过期后强制刷新）
- */
-export function clearUploadTokenCache(): void {
-  cachedToken = null;
 }
