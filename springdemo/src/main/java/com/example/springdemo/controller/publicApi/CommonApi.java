@@ -123,5 +123,4 @@ public class CommonApi {
       response.setStatus(404);
     }
   }
-
 }

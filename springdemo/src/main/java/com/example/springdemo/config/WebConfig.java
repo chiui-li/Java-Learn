@@ -41,7 +41,8 @@ public class WebConfig implements WebMvcConfigurer {
             "/*.js",
             "/getFile/**",
             "/css/**",
-            "/*.*"); // 排除登录/注册等接口
+            "/*.*",
+            "/sitemap.xml"); // 排除登录/注册等接口
   }
 
 }
