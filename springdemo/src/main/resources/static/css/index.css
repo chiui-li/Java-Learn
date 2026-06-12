@@ -986,6 +986,12 @@ template {
   padding-top: 0;
 }
 
+.detail-content pre {
+  padding: 20px;
+  border-radius: 14px;
+  font-size: 13px;
+}
+
 
 
 @keyframes pulse-dot {
@@ -1078,7 +1084,7 @@ template {
   .sidebar {
     width: 100%;
     position: static;
-    /* margin-bottom: 20px; */
+    margin-top: 20px;
   }
 
   .profile-card {

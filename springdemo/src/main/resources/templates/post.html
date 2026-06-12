@@ -7,6 +7,9 @@
     <meta name="description" th:content="${post.description != null ? post.description : post.title}" />
     <meta name="author" th:content="${profile.username != null ? profile.username : userName}" />
     <link rel="stylesheet" th:href="@{/css/index.css}" />
+    <link rel="stylesheet" href="/getFile/highlight.min.css">
+    <script src="/getFile/highlight.min.js"></script>
+
   </head>
   <body>
     <!-- Header -->
@@ -178,4 +181,16 @@
       </div>
     </footer>
   </body>
+  <script>
+
+  document.querySelectorAll(
+    '[data-language]'
+    )
+  .forEach(el => {
+    hljs.highlightElement(el)
+  });
+
+
+</script>
+
 </html>
