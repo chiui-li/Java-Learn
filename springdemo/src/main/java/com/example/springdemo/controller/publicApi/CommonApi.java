@@ -114,7 +114,7 @@ public class CommonApi {
     response.setContentType(mimeType);
     response.setHeader("Content-Disposition",
         "attachment; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
-    response.setHeader(fileName, mimeType);
+    // response.setHeader(fileName, mimeType);
     response.setHeader("Cache-Control", "public, max-age=31536000, immutable");
     try {
       Files.copy(file.toPath(), response.getOutputStream());

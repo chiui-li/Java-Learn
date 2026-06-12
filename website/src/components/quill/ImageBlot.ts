@@ -15,6 +15,7 @@ class ImageBlot extends BlockEmbed {
     const node = super.create();
     const src = typeof value === "string" ? value : value.url;
     node.setAttribute("src", src);
+    node.setAttribute("loading", "lazy");
     if (typeof value !== "string" && value.width) {
       node.setAttribute("width", value.width);
     }

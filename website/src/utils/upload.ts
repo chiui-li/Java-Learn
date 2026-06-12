@@ -57,7 +57,7 @@ async function compressImageIfNeeded(file: File): Promise<File> {
 
   try {
     return await imageCompression(file, {
-      maxSizeMB: 1,
+      maxSizeMB: 0.5,
       maxWidthOrHeight: 1920,
       useWebWorker: true,
       fileType: file.type,

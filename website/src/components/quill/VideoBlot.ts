@@ -17,6 +17,7 @@ class VideoBlot extends BlockEmbed {
     const src = typeof value === "string" ? value : value.url;
     node.setAttribute("src", src);
     node.setAttribute("controls", "true");
+    node.setAttribute("loading", "lazy");
     if (typeof value !== "string" && value.width) {
       node.setAttribute("width", value.width);
     }
