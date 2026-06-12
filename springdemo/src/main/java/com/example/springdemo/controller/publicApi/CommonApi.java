@@ -120,6 +120,7 @@ public class CommonApi {
       Files.copy(file.toPath(), response.getOutputStream());
     } catch (Exception e) {
       e.printStackTrace();
+      response.setStatus(404);
     }
   }
 
