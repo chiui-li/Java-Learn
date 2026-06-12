@@ -3,14 +3,11 @@ import Quill, { Delta } from "quill";
 import { onMounted, ref } from "vue";
 import "quill/dist/quill.snow.css";
 import { getFileUrl } from "@/utils/upload";
-// import ImageBlot from "@/components/quill/ImageBlot";
 import ImageResize from "@/components/quill/ImageResize";
-import http from "@/request";
-import ImageUploader from "quill-image-uploader";
-import "quill-image-uploader/dist/quill.imageUploader.min.css";
 import ImageBlot from "./quill/ImageBlot";
 import VideoBlot from "./quill/VideoBlot";
 import VideoResize from "./quill/VideoResize";
+import { ElLoading, ElMessage } from "element-plus";
 
 // Quill.register("modules/imageUploader", ImageUploader);
 
@@ -60,6 +57,13 @@ function createUploadHandler(embedType: "image" | "video") {
     input.addEventListener("change", async () => {
       const file = input.files?.[0];
       if (!file) return;
+
+      const typeLabel = embedType === "image" ? "图片" : "视频";
+      const loading = ElLoading.service({
+        target: editorContainer.value!,
+        text: `正在上传${typeLabel}…`,
+      });
+
       try {
         // 核心上传步骤，对接真实 OSS 后替换 getFileUrl 实现
         const url = await getFileUrl(file);
@@ -67,9 +71,11 @@ function createUploadHandler(embedType: "image" | "video") {
         const embedValue =
           embedType === "image" || embedType === "video" ? { url } : url;
         quill!.insertEmbed(range.index, embedType, embedValue, "user");
-        // quill!.setSelection(+1);
       } catch (e) {
         console.error(`[QuillEditor] ${embedType} upload failed:`, e);
+        ElMessage.error(`${typeLabel}上传失败，请重试`);
+      } finally {
+        loading.close();
       }
     });
     input.click();

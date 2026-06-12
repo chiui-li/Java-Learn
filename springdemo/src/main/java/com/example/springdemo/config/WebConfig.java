@@ -7,12 +7,16 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.example.springdemo.interceptor.AuthInterceptor;
+import com.example.springdemo.interceptor.ViewCountInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
   @Autowired
   private AuthInterceptor authInterceptor;
+
+  @Autowired
+  private ViewCountInterceptor vInterceptor;
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
@@ -26,6 +30,9 @@ public class WebConfig implements WebMvcConfigurer {
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
+
+    registry.addInterceptor(vInterceptor).addPathPatterns("/", "/blog/**");
+
     registry.addInterceptor(authInterceptor)
         .addPathPatterns("/**") // 拦截所有请求
         .excludePathPatterns("/", "/user/login", "/user/register", "/ping", "/blog/**", "/page/**", "/static/**",
