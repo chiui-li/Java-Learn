@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>博客首页 - 所有博客</title>
+    <title>首页 - chiuili</title>
     <meta name="description" content="浏览所有博客，发现精彩内容, 个人blog, 编程技术，计算机编程，生活记录">
     <link rel="stylesheet" th:href="@{/css/index.css}">
     <script>
@@ -17,7 +17,7 @@
 <!-- Header -->
 <header class="header">
     <div class="header-inner">
-        <a class="logo" href="/">链接</a>
+        <a class="logo" href="/">首页</a>
     </div>
 </header>
 
@@ -25,13 +25,13 @@
 <div class="main-content">
     <div class="home-container">
 
-        <h1 class="home-title">所有博客</h1>
-        <p class="home-subtitle">浏览以下我的博客站点</p>
-
+        <h1 class="home-title"></h1>
+        <!-- <p class="home-subtitle">欢迎浏览以下我的站点</p> -->
+        <p class="site-category">博客</p>
         <div class="user-grid" th:if="${users != null and !users.isEmpty()}">
             <a class="user-card"
                th:each="user : ${users}"
-               th:href="@{/blog/{userName}(userName=${user.username})}"
+               th:href="@{//blog.chiuili.top/blog/{userName}(userName=${user.username})}"
                th:title="'访问 ' + ${user.username} + ' 的博客'">
                 <div class="user-avatar" th:if="${user.avatar != null}">
                     <img th:src="${user.avatar}" alt="">
@@ -57,7 +57,7 @@
 <footer class="footer">
     <div class="footer-inner">
         <span class="copyright">
-            &copy; <span th:text="${#temporals.year(#temporals.createNow())}">2026</span> 个人编程技术学习. All rights reserved.
+            &copy; <span th:text="${#temporals.year(#temporals.createNow())}">2026</span> 学习研究. All rights reserved.
         </span>
         <div class="footer-powered">
             <span class="dot"></span>

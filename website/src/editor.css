@@ -1,0 +1,94 @@
+.editor-quill-instance {}
+
+
+.editor-quill-instance .toolbar * {
+  line-height: normal;
+}
+
+.editor-quill-instance .quill-editor-content {
+  font-size: 16px;
+}
+
+.quill-editor-content img,
+.quill-editor-content video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ql-font-inter {
+  font-family: Inter, sans-serif;
+}
+
+.ql-font-system {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.ql-font-jetbrains-mono {
+  font-family: "JetBrains Mono", monospace;
+}
+
+.ql-font-fira-code {
+  font-family: "Fira Code", monospace;
+}
+
+.ql-font-source-code-pro {
+  font-family: "Source Code Pro", monospace;
+}
+
+.ql-font-cascadia-code {
+  font-family: "Cascadia Code", monospace;
+}
+
+.ql-font-ibm-plex-sans {
+  font-family: "IBM Plex Sans", sans-serif;
+}
+
+.ql-font-roboto {
+  font-family: Roboto, sans-serif;
+}
+
+
+.ql-snow .ql-picker.ql-size {
+  width: 80px;
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="12px"]::before {
+  content: "12";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="14px"]::before {
+  content: "14";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="16px"]::before {
+  content: "16";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="18px"]::before {
+  content: "18";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="20px"]::before {
+  content: "20";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="24px"]::before {
+  content: "24";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="32px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="32px"]::before {
+  content: "32";
+}

@@ -4,21 +4,43 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title th:text="${post.title}">Blog Post</title>
-    <meta name="description" th:content="${post.description != null ? post.description : post.title}" />
-    <meta name="author" th:content="${profile.username != null ? profile.username : userName}" />
+    <meta
+      name="description"
+      th:content="${post.description != null ? post.description : post.title}"
+    />
+    <meta
+      name="author"
+      th:content="${profile.username != null ? profile.username : userName}"
+    />
     <link rel="stylesheet" th:href="@{/css/index.css}" />
-    <!-- <link rel="stylesheet" href="/getFile/highlight.min.css"> -->
-    <link rel="stylesheet" href="/getFile/quill.snow.css">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/getFile/quill.snow.css" />
+    <script src="/getFile/highlight.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     <style>
       #myEditor {
-        border: none  !important;
+        border: none !important;
       }
       .ql-editor {
         padding: 0;
       }
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #666;
+        text-decoration: none;
+        font-size: 14px;
+        margin-bottom: 12px;
+        transition: color 0.2s;
+      }
+      .back-btn:hover {
+        color: #333;
+      }
     </style>
-    <!-- <script src="/getFile/highlight.min.js"></script> -->
   </head>
   <body>
     <!-- Header -->
@@ -140,6 +162,13 @@
           <!-- Post Detail -->
           <article class="post-detail">
             <header class="detail-header">
+              <a href="javascript:history.back()" class="back-btn" title="返回">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"/>
+                  <polyline points="12 19 5 12 12 5"/>
+                </svg>
+                <span>返回</span>
+              </a>
               <h1 class="detail-title" th:text="${post.title}">文章标题</h1>
               <div class="detail-meta">
                 <span
@@ -160,7 +189,11 @@
                 >
               </div>
             </header>
-            <div id="myEditor" class="detail-content  ql-snow" th:utext="${post.contentHtml}">
+            <div
+              id="myEditor"
+              class="detail-content ql-snow quill-editor-content"
+              th:utext="${post.contentHtml}"
+            >
               文章内容
             </div>
           </article>
@@ -178,9 +211,7 @@
         </span>
         <ul class="footer-links">
           <li>
-            <a th:href="@{/blog/{userName}(userName=${userName})}"
-              >首页</a
-            >
+            <a th:href="@{/blog/{userName}(userName=${userName})}">首页</a>
           </li>
         </ul>
         <div class="footer-powered">
@@ -191,19 +222,13 @@
     </footer>
   </body>
   <script th:inline="javascript">
-
-
-
-  const quill = new Quill('#myEditor', {
-    theme: 'snow',
-            readOnly: true,
-        modules: {
-            toolbar: false
-        }
-
-  });
-
-
-</script>
-
+    const quill = new Quill("#myEditor", {
+      theme: "snow",
+      readOnly: true,
+      modules: {
+        toolbar: false,
+        syntax: true,
+      },
+    });
+  </script>
 </html>

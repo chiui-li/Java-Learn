@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { useArticleStore } from "@/store/useArticleStore";
 import http from "@/request";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { Delta } from "quill";
 
 const router = useRouter();
 const keyword = ref("");
@@ -49,7 +50,7 @@ async function goCreate(categoryName: string) {
   const res = await http.post<D.Result<number>>("/posts/create", {
     data: {
       title: "新建文章",
-      content: "来写点什么吧",
+      content: JSON.stringify(new Delta()),
       postType: "article",
       categoryName: categoryName || "前端",
     },

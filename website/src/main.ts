@@ -5,6 +5,7 @@ import { createPinia } from "pinia";
 import "normalize.css";
 import router from "./router.ts";
 import "element-plus/dist/index.css";
+import "./editor.css";
 
 const app = createApp(App);
 const pinia = createPinia();
