@@ -1,5 +1,6 @@
 package com.example.springdemo.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -8,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 @Data
-public class PostEntity {
+public class PostEntity implements Serializable {
   /**
    * 主键ID
    */

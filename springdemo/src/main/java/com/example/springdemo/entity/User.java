@@ -2,13 +2,14 @@ package com.example.springdemo.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
-public class User {
+public class User implements Serializable {
 
   /**
    * 主键ID
